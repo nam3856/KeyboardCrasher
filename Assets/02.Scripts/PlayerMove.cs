@@ -39,7 +39,7 @@ public class PlayerMove : MonoBehaviour
 
         if (crit <= 25f)
         {
-            UI_Game.Instance.Critical();
+            UI_Game.Instance.ShowCriticalText();
             CameraShake.Shake();
         }
         UI_Game.Instance.Add();
