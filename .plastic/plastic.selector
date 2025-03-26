@@ -1,0 +1,4 @@
+repository "gamejam000001@kinggodmini@cloud"
+  path "/"
+    br "/main"
+    co "/main"
