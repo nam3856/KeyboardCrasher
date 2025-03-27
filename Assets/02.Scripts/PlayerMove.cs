@@ -1,6 +1,9 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.InputSystem;
+using UnityEngine.XR;
 public class PlayerMove : MonoBehaviour
 {
     public InputSystem_Actions inputActions;
@@ -12,6 +15,8 @@ public class PlayerMove : MonoBehaviour
     private float x;
     public float MoveSpeed = 5f;
     public int count;
+    float lastInputTime;
+    float crit;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     private void Awake()
@@ -23,27 +28,54 @@ public class PlayerMove : MonoBehaviour
         inputActions.Enable();
         inputActions.Player.Attack.performed += OnAttackPerformed;
     }
-
+    private void Update()
+    {
+        float inputInterval = Time.time - lastInputTime;
+        if (inputInterval > 0.6f)
+        {
+            An.speed = 1f;
+        }
+    }
     private void OnAttackPerformed(InputAction.CallbackContext context)
     {
         int rand = Random.Range(0, 6);
+        
         An.SetInteger("rand", rand);
         An.SetTrigger("Attack");
         rand = Random.Range(0, 2);
+        float inputInterval = Time.time - lastInputTime;
+        float normalizedSpeed = Mathf.Clamp(0.5f / inputInterval, 1f, 5f);
+        Debug.Log(normalizedSpeed);
+        lastInputTime = Time.time;
+        An.speed = normalizedSpeed;
 
-        EffectAn[count].SetInteger("rand", rand);
-        EffectAn[count].SetTrigger("Attack");
-
-        float crit = Random.Range(16f, 50f);
-        StartCoroutine(CamZoomCoroutine(crit));
+        crit = Random.Range(16f, 50f);
+        //StartCoroutine(CamZoomCoroutine(crit));
 
         if (crit <= 25f)
         {
             UI_Game.Instance.ShowCriticalText();
-            CameraShake.Shake();
+            //CameraShake.Shake();
         }
         UI_Game.Instance.Add();
-        count = (count + 1) % (EffectAn.Length-1); 
+
+    }
+    public void OnAnimationCompleted(int rand)
+    {
+        EffectAn[count].SetInteger("rand", rand);
+        EffectAn[count].SetTrigger("Attack");
+        count = (count + 1) % (EffectAn.Length - 1);
+    }
+    public void StartCameraZoom(float val)
+    {
+        if (val == 0)
+        {
+            StartCoroutine(CamZoomCoroutine(crit));
+        }
+        else
+        {
+            StartCoroutine(CamZoomCoroutine(val));
+        }
     }
 
     private IEnumerator CamZoomCoroutine(float rnd)
