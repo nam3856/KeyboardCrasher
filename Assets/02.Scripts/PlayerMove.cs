@@ -49,10 +49,10 @@ public class PlayerMove : MonoBehaviour
         lastInputTime = Time.time;
         An.speed = normalizedSpeed;
 
-        crit = Random.Range(16f, 50f);
-        //StartCoroutine(CamZoomCoroutine(crit));
+        crit = Random.Range(30f, 50f);
+        StartCoroutine(CamZoomCoroutine(crit));
 
-        if (crit <= 25f)
+        if (crit <= 35f)
         {
             UI_Game.Instance.ShowCriticalText();
             //CameraShake.Shake();
