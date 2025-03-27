@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 2dfa97d49f8cb4751a2c59d2b4a9c7c8
+timeCreated: 1427469300
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 51095
+  packageName: Introloop
+  packageVersion: 6.0.0
+  assetPath: Assets/Introloop/Editor/IntroloopAudioEditor.cs
+  uploadId: 472632

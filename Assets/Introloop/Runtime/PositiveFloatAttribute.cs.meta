@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: b60669f91616ec64da35147d2de44ac2
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 51095
+  packageName: Introloop
+  packageVersion: 6.0.0
+  assetPath: Assets/Introloop/Runtime/PositiveFloatAttribute.cs
+  uploadId: 472632

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ce17409373e6b4b5782cc81c2fb9a9b3
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 51095
+  packageName: Introloop
+  packageVersion: 6.0.0
+  assetPath: Assets/Introloop/Editor/E7.Introloop.Editor.asmdef
+  uploadId: 472632

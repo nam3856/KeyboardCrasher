@@ -1,6 +1,6 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
-using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,6 +29,7 @@ public class UI_Game : MonoBehaviour
 
     public event Action OnTimerEnd;
     public event Action OnTimerStart;
+    public GameObject sandBag;
 
     private void Awake()
     {
@@ -45,6 +46,24 @@ public class UI_Game : MonoBehaviour
         InstructionPanel.SetActive(false);
     }
 
+    private void Start()
+    {
+
+        StarCatchBarUI.Instance.OnStarCatchCompleted += StartChase;
+    }
+
+    public void StartChase()
+    {
+        ChaseX().Forget();
+    }
+    public async UniTaskVoid ChaseX()
+    {
+        while (sandBag.GetComponent<Rigidbody2D>().linearVelocity != Vector2.zero)
+        {
+            ComboText.text = $"{sandBag.transform.position.x.ToString("F2")}M";
+            await UniTask.Yield();
+        }
+    }
     void ShowGameInstructions()
     {
         // 게임 방법 안내 내용 설정
@@ -77,35 +96,36 @@ public class UI_Game : MonoBehaviour
         StartButton.gameObject.SetActive(false);
         Timer = 10;
         OnTimerStart?.Invoke();
-        StartCoroutine(TimerCoroutine());
+        TimerUniTask().Forget();
     }
 
-    public IEnumerator TimerCoroutine()
+    public async UniTaskVoid TimerUniTask()
     {
         while (Timer > 0)
         {
             TimerText.text = Timer.ToString("F3");
             Timer = Mathf.Clamp(Timer - Time.deltaTime, 0, 10);
             TimerBar.fillAmount = Timer / 10;
-            yield return null;
+            await UniTask.Yield();
         }
+        TimerText.gameObject.SetActive(false);
         OnTimerEnd?.Invoke();
         StarCatchGo();
     }
     public void StarCatchGo()
     {
-        StartCoroutine(StarForceTimerCoroutine());
+        StarForceTimer().Forget();
     }
 
-    public IEnumerator StarForceTimerCoroutine()
+    public async UniTaskVoid StarForceTimer()
     {
         StarCatchUI.gameObject.SetActive(true);
-        Timer = 8f;
+        Timer = 6f;
         while (Timer > 0)
         {
-            Timer = Mathf.Clamp(Timer - Time.deltaTime, 0, 10);
-            TimerBar.fillAmount = Timer / 10;
-            yield return null;
+            Timer = Mathf.Clamp(Timer - Time.deltaTime, 0, 6f);
+            TimerBar.fillAmount =  Mathf.Clamp(Timer/3f, 0, 1f);
+            await UniTask.Yield();
         }
     }
 

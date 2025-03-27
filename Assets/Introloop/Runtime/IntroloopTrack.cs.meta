@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3f0ea45b6eadc934782e1b231344c8f1
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 51095
+  packageName: Introloop
+  packageVersion: 6.0.0
+  assetPath: Assets/Introloop/Runtime/IntroloopTrack.cs
+  uploadId: 472632

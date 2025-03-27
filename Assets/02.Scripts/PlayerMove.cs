@@ -92,24 +92,26 @@ public class PlayerMove : MonoBehaviour
 
     public void PlayAttackSound(int idx)
     {
-        int audioIndex;
-        if (idx >= 0 && idx < 3)
-        {
-            audioIndex = Random.Range(0, 5);
-        }
-        else
-        {
-            audioIndex = Random.Range(5, 10);
-        }
-        var clip = attackStartSounds[audioIndex];
-        StartAudioSource.PlayOneShot(clip);
+        //int audioIndex;
+        //if (idx >= 0 && idx < 3)
+        //{
+        //    audioIndex = Random.Range(0, 5);
+        //}
+        //else
+        //{
+        //    audioIndex = Random.Range(5, 10);
+        //}
+        //var clip = attackStartSounds[audioIndex];
+        //StartAudioSource.PlayOneShot(clip);
     }
 
+    int soundIdx = 0;
     public void PlayAttackHitSound()
     {
-        var clip = attackHitSounds[Random.Range(0, 9)];
+        var clip = attackHitSounds[soundIdx];
         HitAudioSource.PlayOneShot(clip);
 
+        soundIdx = (soundIdx + 1) % attackHitSounds.Length;
         HitAudioSource.pitch = Random.Range(0.95f, 1.05f);
     }
 

@@ -46,12 +46,18 @@ public class StarCatchBarUI : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    private void Start()
-    {
-        UI_Game.Instance.OnTimerEnd += TimerEnd;
-    }
     private void OnEnable()
     {
+
+    }
+
+    public void TimerEnd()
+    {
+        StartCoroutine(StartStarCatch());
+    }
+    private IEnumerator StartStarCatch()
+    {
+        Time.timeScale = 0.3f;
         x = UnityEngine.Random.Range(-100, 1100);
         SuccessZone.anchoredPosition = new Vector2(x, 50);
 
@@ -64,17 +70,45 @@ public class StarCatchBarUI : MonoBehaviour
         WellDoneMaxX = WellDoneMinX + 500;
         TriedMaxX = TriedMinX + 900;
 
-    }
-
-    public void TimerEnd()
-    {
-        StartCoroutine(StartStarCatch());
-    }
-    private IEnumerator StartStarCatch()
-    {
         canvas.DOFade(1f, 1f);
         yield return new WaitForSeconds(3);
         isPlaying = true;
+    }
+
+    public void ForceStarCatchEnd()
+    {
+        if (isPlaying)
+        {
+            float x = pointer.anchoredPosition.x;
+            if (x >= PerfectMinX && x <= PerfectMaxX)
+            {
+                Howmuch = SuccessRate.Perfect;
+            }
+            else if (x >= SuccessMinX && x <= SuccessMaxX)
+            {
+                Howmuch = SuccessRate.Success;
+            }
+            else if (x >= WellDoneMinX && x <= WellDoneMaxX)
+            {
+                Howmuch = SuccessRate.WellDone;
+            }
+            else if (x >= TriedMinX && x <= TriedMaxX)
+            {
+                Howmuch = SuccessRate.Tried;
+            }
+            else
+            {
+                Howmuch = SuccessRate.Bad;
+            }
+
+
+            multipler = multiplers[(int)Howmuch];
+            isPlaying = false;
+
+            GetComponent<CanvasGroup>().alpha = 0f;
+        }
+        Debug.Log(Howmuch);
+        OnStarCatchCompleted?.Invoke();
     }
 
     void Update()
@@ -86,9 +120,9 @@ public class StarCatchBarUI : MonoBehaviour
         pointer.anchoredPosition += new Vector2(move, 0);
 
         // 양쪽 끝 반전
-        if (pointer.anchoredPosition.x >= bar.rect.width / 2f)
+        if (pointer.anchoredPosition.x >= bar.rect.width)
             goingRight = false;
-        else if (pointer.anchoredPosition.x <= -bar.rect.width / 2f)
+        else if (pointer.anchoredPosition.x <= 0)
             goingRight = true;
 
         // 입력 판정
@@ -119,7 +153,8 @@ public class StarCatchBarUI : MonoBehaviour
 
             multipler = multiplers[(int)Howmuch];
             isPlaying = false;
-            OnStarCatchCompleted?.Invoke();
+
+            Debug.Log(Howmuch);
             GetComponent<CanvasGroup>().alpha = 0f;
         }
     }

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 8a18b43bbefca455abece4fd62e82bba
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 51095
+  packageName: Introloop
+  packageVersion: 6.0.0
+  assetPath: Assets/Introloop/Runtime/E7.Introloop.asmdef
+  uploadId: 472632

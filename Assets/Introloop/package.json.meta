@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: cfef7536591674a388f4cd70830b469e
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 51095
+  packageName: Introloop
+  packageVersion: 6.0.0
+  assetPath: Assets/Introloop/package.json
+  uploadId: 472632
