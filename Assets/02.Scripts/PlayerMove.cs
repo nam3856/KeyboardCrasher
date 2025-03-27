@@ -57,6 +57,7 @@ public class PlayerMove : MonoBehaviour
     {
         inputActions.Player.Attack.performed -= OnAttackPerformed;
         inputActions.Disable();
+        An.SetTrigger("Charge");
     }
 
     private void OnAttackPerformed(InputAction.CallbackContext context)

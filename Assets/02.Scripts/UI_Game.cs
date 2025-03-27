@@ -48,7 +48,6 @@ public class UI_Game : MonoBehaviour
 
     private void Start()
     {
-
         StarCatchBarUI.Instance.OnStarCatchCompleted += StartChase;
     }
 
@@ -56,22 +55,23 @@ public class UI_Game : MonoBehaviour
     {
         ChaseX().Forget();
     }
+
     public async UniTaskVoid ChaseX()
     {
         while (sandBag.GetComponent<Rigidbody2D>().linearVelocity != Vector2.zero)
         {
-            ComboText.text = $"{sandBag.transform.position.x.ToString("F2")}M";
+            ComboText.text = $"{sandBag.transform.position.x:F2}M";
             await UniTask.Yield();
         }
     }
+
     void ShowGameInstructions()
     {
-        // 게임 방법 안내 내용 설정
-        string instructions = "게임 방법:\n1. 10초동안 키보드를 마구 누르세요.\n2. 10초 뒤 마무리 펀치를 할 수 있습니다.\n3. 허수아비를 최대한 멀리 날려보세요.";
+        string instructions = "";
         InstructionText.text = instructions;
-        // 안내 패널 활성화
         InstructionPanel.SetActive(true);
     }
+
     public void Add()
     {
         Count++;
@@ -79,10 +79,12 @@ public class UI_Game : MonoBehaviour
         float threshold = Mathf.Lerp(100f, 5f, timeRatio);
         ComboText.fontSize = Mathf.Clamp((float)Count / 2, 40f, 120f);
         ComboText.text = Count >= threshold ? $"Combo x {Count}!" : $"Combo x {Count}";
-        if (_tween!=null && _tween.active == true)
+
+        if (_tween != null && _tween.active)
         {
             _tween.Kill();
         }
+
         _tween = ComboText.transform.DOScale(3f, 0.1f)
             .SetEase(Ease.InExpo)
             .OnComplete(() =>
@@ -104,14 +106,16 @@ public class UI_Game : MonoBehaviour
         while (Timer > 0)
         {
             TimerText.text = Timer.ToString("F3");
-            Timer = Mathf.Clamp(Timer - Time.deltaTime, 0, 10);
+            Timer = Mathf.Clamp(Timer - Time.unscaledDeltaTime, 0, 10);
             TimerBar.fillAmount = Timer / 10;
             await UniTask.Yield();
         }
+
         TimerText.gameObject.SetActive(false);
         OnTimerEnd?.Invoke();
         StarCatchGo();
     }
+
     public void StarCatchGo()
     {
         StarForceTimer().Forget();
@@ -121,10 +125,11 @@ public class UI_Game : MonoBehaviour
     {
         StarCatchUI.gameObject.SetActive(true);
         Timer = 6f;
+
         while (Timer > 0)
         {
-            Timer = Mathf.Clamp(Timer - Time.deltaTime, 0, 6f);
-            TimerBar.fillAmount =  Mathf.Clamp(Timer/3f, 0, 1f);
+            Timer = Mathf.Clamp(Timer - Time.unscaledDeltaTime, 0, 6f);
+            TimerBar.fillAmount = Mathf.Clamp(Timer / 3f, 0, 1f);
             await UniTask.Yield();
         }
     }

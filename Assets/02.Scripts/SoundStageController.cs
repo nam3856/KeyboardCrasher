@@ -14,7 +14,9 @@ public class SoundStageController : MonoBehaviour
     [SerializeField] private AudioClip drumLoop;
     [SerializeField] private AudioClip mainBGM;
     [SerializeField] private AudioClip slowSFX;
+
     public AudioMixer audioMixer;
+
     [Header("Settings")]
     [SerializeField] private float introDuration = 10f;
 
@@ -23,9 +25,7 @@ public class SoundStageController : MonoBehaviour
     private void Start()
     {
         UI_Game.Instance.OnTimerStart += TimerStart;
-
         PlayBGM(beforeStartBGM, loop: true);
-
     }
 
     private void TimerStart()
@@ -33,14 +33,13 @@ public class SoundStageController : MonoBehaviour
         PlayBGM(introBGM, loop: false);
         StartSequence().Forget();
     }
+
     private async UniTaskVoid StartSequence()
     {
         if (hasStarted) return;
         hasStarted = true;
 
-        // 10초 대기 (인트로 재생)
-        await UniTask.Delay(10000);
-
+        await UniTask.Delay(10000, DelayType.UnscaledDeltaTime);
         WaitAndStartDrum().Forget();
     }
 
@@ -48,24 +47,27 @@ public class SoundStageController : MonoBehaviour
     {
         //slowSfxSource.PlayOneShot(slowSFX);
 
-        //PlayBGM(drumLoop, loop: true);
+        // 드럼 루프 대신 스타캐치 바로 시작 (드럼은 제거되었거나 뒤에 위치할 수도 있음)
         StarCatchBarUI.Instance.TimerEnd();
-        ApplyLowPass();
-        await UniTask.Delay(6000);
-        RemoveLowPass();
-        StarCatchBarUI.Instance.ForceStarCatchEnd();
 
+        ApplyLowPass();
+        await UniTask.Delay(6000, DelayType.UnscaledDeltaTime);
+        RemoveLowPass();
+
+        StarCatchBarUI.Instance.ForceStarCatchEnd();
         PlayBGM(mainBGM, loop: true);
     }
 
     public void ApplyLowPass()
     {
-        audioMixer.SetFloat("LowpassFreq", 800f); // 예: 800Hz로 제한 (저음만 통과)
+        audioMixer.SetFloat("LowpassFreq", 800f);
     }
+
     public void RemoveLowPass()
     {
-        audioMixer.SetFloat("LowpassFreq", 22000f); // 정상 주파수로 복구 (원음으로)
+        audioMixer.SetFloat("LowpassFreq", 22000f);
     }
+
     private void PlayBGM(AudioClip clip, bool loop)
     {
         if (bgmSource == null || clip == null) return;

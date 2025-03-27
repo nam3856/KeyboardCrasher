@@ -24,7 +24,7 @@ public class CameraZoomFeedback : MonoBehaviour
     private IEnumerator ZoomEffect(float zoomSize, float duration)
     {
         cam.fieldOfView = zoomSize;
-        yield return new WaitForSeconds(duration);
+        yield return new WaitForSecondsRealtime(duration);
         cam.fieldOfView = defaultSize;
     }
 }

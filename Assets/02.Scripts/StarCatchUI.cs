@@ -2,6 +2,8 @@ using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 using System;
+using TMPro;
+
 public enum SuccessRate
 {
     Perfect,
@@ -10,11 +12,12 @@ public enum SuccessRate
     Tried,
     Bad
 }
+
 public class StarCatchBarUI : MonoBehaviour
 {
     [SerializeField] private RectTransform pointer;
     [SerializeField] private RectTransform bar;
-    [SerializeField] private float speed = 600f;
+    [SerializeField] private float speed = 1200f;
     [SerializeField] private float PerfectMinX;
     [SerializeField] private float PerfectMaxX;
     [SerializeField] private float SuccessMinX;
@@ -26,6 +29,7 @@ public class StarCatchBarUI : MonoBehaviour
     [SerializeField] private float x;
     [SerializeField] private CanvasGroup canvas;
 
+    public CameraZoomFeedback zoomFeedback;
     public float multipler = 0.1f;
     public float[] multiplers;
     public RectTransform SuccessZone;
@@ -35,6 +39,8 @@ public class StarCatchBarUI : MonoBehaviour
     private bool isPlaying = false;
     public static StarCatchBarUI Instance;
     public SuccessRate Howmuch;
+    public TextMeshProUGUI starcatchtimertext;
+
     private void Awake()
     {
         if (Instance == null)
@@ -46,20 +52,18 @@ public class StarCatchBarUI : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    private void OnEnable()
-    {
-
-    }
 
     public void TimerEnd()
     {
         StartCoroutine(StartStarCatch());
     }
+
     private IEnumerator StartStarCatch()
     {
         Time.timeScale = 0.3f;
+
         x = UnityEngine.Random.Range(-100, 1100);
-        SuccessZone.anchoredPosition = new Vector2(x, 50);
+        SuccessZone.anchoredPosition = new Vector2(x, -253);
 
         TriedMinX = x;
         WellDoneMinX = x + 200f;
@@ -70,9 +74,22 @@ public class StarCatchBarUI : MonoBehaviour
         WellDoneMaxX = WellDoneMinX + 500;
         TriedMaxX = TriedMinX + 900;
 
+        zoomFeedback.DoZoomEffect(14f, 6f);
         canvas.DOFade(1f, 1f);
-        yield return new WaitForSeconds(3);
+
+        yield return new WaitForSecondsRealtime(1f);
+        starcatchtimertext.text = "2";
+
+        yield return new WaitForSecondsRealtime(1f);
+        starcatchtimertext.text = "1";
+
+        yield return new WaitForSecondsRealtime(1f);
+        starcatchtimertext.text = "START!";
+
         isPlaying = true;
+
+        yield return new WaitForSecondsRealtime(1f);
+        starcatchtimertext.text = "";
     }
 
     public void ForceStarCatchEnd()
@@ -101,31 +118,29 @@ public class StarCatchBarUI : MonoBehaviour
                 Howmuch = SuccessRate.Bad;
             }
 
-
             multipler = multiplers[(int)Howmuch];
             isPlaying = false;
-
             GetComponent<CanvasGroup>().alpha = 0f;
         }
+
         Debug.Log(Howmuch);
+
+        Time.timeScale = 1f;
         OnStarCatchCompleted?.Invoke();
     }
 
-    void Update()
+    private void Update()
     {
         if (!isPlaying) return;
 
-        // 좌우 움직임
-        float move = speed * Time.deltaTime * (goingRight ? 1 : -1);
+        float move = speed * Time.unscaledDeltaTime * (goingRight ? 1 : -1);
         pointer.anchoredPosition += new Vector2(move, 0);
 
-        // 양쪽 끝 반전
         if (pointer.anchoredPosition.x >= bar.rect.width)
             goingRight = false;
         else if (pointer.anchoredPosition.x <= 0)
             goingRight = true;
 
-        // 입력 판정
         if (Input.GetKeyDown(KeyCode.Space))
         {
             float x = pointer.anchoredPosition.x;
@@ -149,7 +164,6 @@ public class StarCatchBarUI : MonoBehaviour
             {
                 Howmuch = SuccessRate.Bad;
             }
-
 
             multipler = multiplers[(int)Howmuch];
             isPlaying = false;
