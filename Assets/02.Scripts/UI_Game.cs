@@ -22,6 +22,7 @@ public class UI_Game : MonoBehaviour
 
     public GameObject InstructionPanel;
     public TextMeshProUGUI InstructionText;
+    public TextMeshProUGUI TimerText;
 
     private void Awake()
     {
@@ -34,7 +35,7 @@ public class UI_Game : MonoBehaviour
             Destroy(gameObject);
         }
 
-        StartButton.onClick.AddListener(ShowGameInstructions);
+        StartButton.onClick.AddListener(StartTimer);
         InstructionPanel.SetActive(false);
     }
 
@@ -49,8 +50,10 @@ public class UI_Game : MonoBehaviour
     public void Add()
     {
         Count++;
-        ComboText.text = Count.ToString();
-        if(_tween!=null && _tween.active == true)
+        float timeRatio = Timer / 10f;
+        float threshold = Mathf.Lerp(100f, 5f, timeRatio);
+        ComboText.text = Count >= threshold ? $"Combo x {Count}!" : $"Combo x {Count}";
+        if (_tween!=null && _tween.active == true)
         {
             _tween.Kill();
         }
@@ -73,12 +76,28 @@ public class UI_Game : MonoBehaviour
     {
         while (Timer > 0)
         {
+            TimerText.text = Timer.ToString("F3");
+            Timer = Mathf.Clamp(Timer - Time.deltaTime, 0, 10);
+            TimerBar.fillAmount = Timer / 10;
+            yield return null;
+        }
+        
+    }
+    public void StarCatchGo()
+    {
+        StartCoroutine(StarForceTimerCoroutine());
+    }
+
+    public IEnumerator StarForceTimerCoroutine()
+    {
+        Timer = 5f;
+        while (Timer > 0)
+        {
             Timer = Mathf.Clamp(Timer - Time.deltaTime, 0, 10);
             TimerBar.fillAmount = Timer / 10;
             yield return null;
         }
     }
-
 
     public void ShowCriticalText()
     {
