@@ -2,7 +2,14 @@ using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 using System;
-
+public enum SuccessRate
+{
+    Perfect,
+    Success,
+    WellDone,
+    Tried,
+    Bad
+}
 public class StarCatchBarUI : MonoBehaviour
 {
     [SerializeField] private RectTransform pointer;
@@ -19,11 +26,30 @@ public class StarCatchBarUI : MonoBehaviour
     [SerializeField] private float x;
     [SerializeField] private CanvasGroup canvas;
 
+    public float multipler = 0.1f;
+    public float[] multiplers;
     public RectTransform SuccessZone;
     public event Action OnStarCatchCompleted;
 
     private bool goingRight = true;
     private bool isPlaying = false;
+    public static StarCatchBarUI Instance;
+    public SuccessRate Howmuch;
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+    private void Start()
+    {
+        UI_Game.Instance.OnTimerEnd += TimerEnd;
+    }
     private void OnEnable()
     {
         x = UnityEngine.Random.Range(-100, 1100);
@@ -38,9 +64,12 @@ public class StarCatchBarUI : MonoBehaviour
         WellDoneMaxX = WellDoneMinX + 500;
         TriedMaxX = TriedMinX + 900;
 
-        StartCoroutine(StartStarCatch());
     }
 
+    public void TimerEnd()
+    {
+        StartCoroutine(StartStarCatch());
+    }
     private IEnumerator StartStarCatch()
     {
         canvas.DOFade(1f, 1f);
@@ -67,19 +96,31 @@ public class StarCatchBarUI : MonoBehaviour
         {
             float x = pointer.anchoredPosition.x;
             if (x >= PerfectMinX && x <= PerfectMaxX)
-                Debug.Log("Perfect!");
+            {
+                Howmuch = SuccessRate.Perfect;
+            }
             else if (x >= SuccessMinX && x <= SuccessMaxX)
-                Debug.Log("Nice!");
+            {
+                Howmuch = SuccessRate.Success;
+            }
             else if (x >= WellDoneMinX && x <= WellDoneMaxX)
-                Debug.Log("Good!");
+            {
+                Howmuch = SuccessRate.WellDone;
+            }
             else if (x >= TriedMinX && x <= TriedMaxX)
-                Debug.Log("Nice Try!");
+            {
+                Howmuch = SuccessRate.Tried;
+            }
             else
-                Debug.Log("Bad");
+            {
+                Howmuch = SuccessRate.Bad;
+            }
 
-            
+
+            multipler = multiplers[(int)Howmuch];
             isPlaying = false;
             OnStarCatchCompleted?.Invoke();
+            GetComponent<CanvasGroup>().alpha = 0f;
         }
     }
 }

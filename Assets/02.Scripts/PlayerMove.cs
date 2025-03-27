@@ -2,6 +2,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.Audio;
 using UnityEngine.InputSystem;
 using UnityEngine.XR;
 public class PlayerMove : MonoBehaviour
@@ -17,6 +18,10 @@ public class PlayerMove : MonoBehaviour
     public int count;
     float lastInputTime;
     float crit;
+    public AudioSource StartAudioSource;
+    public AudioSource HitAudioSource;
+    public AudioClip[] attackStartSounds;
+    public AudioClip[] attackHitSounds;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     private void Awake()
@@ -84,6 +89,30 @@ public class PlayerMove : MonoBehaviour
         EffectAn[count].SetTrigger("Attack");
         count = (count + 1) % (EffectAn.Length - 1);
     }
+
+    public void PlayAttackSound(int idx)
+    {
+        int audioIndex;
+        if (idx >= 0 && idx < 3)
+        {
+            audioIndex = Random.Range(0, 5);
+        }
+        else
+        {
+            audioIndex = Random.Range(5, 10);
+        }
+        var clip = attackStartSounds[audioIndex];
+        StartAudioSource.PlayOneShot(clip);
+    }
+
+    public void PlayAttackHitSound()
+    {
+        var clip = attackHitSounds[Random.Range(0, 9)];
+        HitAudioSource.PlayOneShot(clip);
+
+        HitAudioSource.pitch = Random.Range(0.95f, 1.05f);
+    }
+
     public void StartCameraZoom(float val)
     {
         if (val == 0)
