@@ -7,7 +7,7 @@ public class StarCatchBarUI : MonoBehaviour
 {
     [SerializeField] private RectTransform pointer;
     [SerializeField] private RectTransform bar;
-    [SerializeField] private float speed = 200f;
+    [SerializeField] private float speed = 600f;
     [SerializeField] private float PerfectMinX;
     [SerializeField] private float PerfectMaxX;
     [SerializeField] private float SuccessMinX;
@@ -23,7 +23,7 @@ public class StarCatchBarUI : MonoBehaviour
     public event Action OnStarCatchCompleted;
 
     private bool goingRight = true;
-    private bool isPlaying = true;
+    private bool isPlaying = false;
     private void OnEnable()
     {
         x = UnityEngine.Random.Range(-100, 1100);

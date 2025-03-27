@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -23,6 +24,11 @@ public class UI_Game : MonoBehaviour
     public GameObject InstructionPanel;
     public TextMeshProUGUI InstructionText;
     public TextMeshProUGUI TimerText;
+
+    public Canvas StarCatchUI;
+
+    public event Action OnTimerEnd;
+    public event Action OnTimerStart;
 
     private void Awake()
     {
@@ -52,6 +58,7 @@ public class UI_Game : MonoBehaviour
         Count++;
         float timeRatio = Timer / 10f;
         float threshold = Mathf.Lerp(100f, 5f, timeRatio);
+        ComboText.fontSize = Mathf.Clamp((float)Count / 2, 40f, 120f);
         ComboText.text = Count >= threshold ? $"Combo x {Count}!" : $"Combo x {Count}";
         if (_tween!=null && _tween.active == true)
         {
@@ -69,6 +76,7 @@ public class UI_Game : MonoBehaviour
     {
         StartButton.gameObject.SetActive(false);
         Timer = 10;
+        OnTimerStart?.Invoke();
         StartCoroutine(TimerCoroutine());
     }
 
@@ -81,7 +89,8 @@ public class UI_Game : MonoBehaviour
             TimerBar.fillAmount = Timer / 10;
             yield return null;
         }
-        
+        OnTimerEnd?.Invoke();
+        StarCatchGo();
     }
     public void StarCatchGo()
     {
@@ -90,7 +99,8 @@ public class UI_Game : MonoBehaviour
 
     public IEnumerator StarForceTimerCoroutine()
     {
-        Timer = 5f;
+        StarCatchUI.gameObject.SetActive(true);
+        Timer = 8f;
         while (Timer > 0)
         {
             Timer = Mathf.Clamp(Timer - Time.deltaTime, 0, 10);

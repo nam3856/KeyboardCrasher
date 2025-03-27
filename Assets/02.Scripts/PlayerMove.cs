@@ -25,8 +25,14 @@ public class PlayerMove : MonoBehaviour
     }
     void Start()
     {
-        inputActions.Enable();
-        inputActions.Player.Attack.performed += OnAttackPerformed;
+        UI_Game.Instance.OnTimerEnd += TimerEnd;
+        UI_Game.Instance.OnTimerStart += StartGame;
+    }
+
+    private void OnDisable()
+    {
+        UI_Game.Instance.OnTimerEnd -= TimerEnd;
+        UI_Game.Instance.OnTimerStart -= StartGame;
     }
     private void Update()
     {
@@ -36,6 +42,18 @@ public class PlayerMove : MonoBehaviour
             An.speed = 1f;
         }
     }
+    void StartGame()
+    {
+        inputActions.Enable();
+        inputActions.Player.Attack.performed += OnAttackPerformed;
+    }
+
+    void TimerEnd()
+    {
+        inputActions.Player.Attack.performed -= OnAttackPerformed;
+        inputActions.Disable();
+    }
+
     private void OnAttackPerformed(InputAction.CallbackContext context)
     {
         int rand = Random.Range(0, 6);
