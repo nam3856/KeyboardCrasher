@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2815563208a205b41b72170c3bf85c66
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 267225
+  packageName: Stylized Punching Bag (PBR/Unlit/Cel-Shaded/Simple)
+  packageVersion: 1.0
+  assetPath: Assets/PunchingBag/Scene/Showcase/Global Volume Profile.asset
+  uploadId: 652858

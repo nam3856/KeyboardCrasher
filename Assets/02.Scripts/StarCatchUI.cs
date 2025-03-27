@@ -13,7 +13,7 @@ public enum SuccessRate
     Bad
 }
 
-public class StarCatchBarUI : MonoBehaviour
+public class StarCatchUI : MonoBehaviour
 {
     [SerializeField] private RectTransform pointer;
     [SerializeField] private RectTransform bar;
@@ -29,7 +29,6 @@ public class StarCatchBarUI : MonoBehaviour
     [SerializeField] private float x;
     [SerializeField] private CanvasGroup canvas;
 
-    public CameraZoomFeedback zoomFeedback;
     public float multipler = 0.1f;
     public float[] multiplers;
     public RectTransform SuccessZone;
@@ -37,7 +36,7 @@ public class StarCatchBarUI : MonoBehaviour
 
     private bool goingRight = true;
     private bool isPlaying = false;
-    public static StarCatchBarUI Instance;
+    public static StarCatchUI Instance;
     public SuccessRate Howmuch;
     public TextMeshProUGUI starcatchtimertext;
 
@@ -52,7 +51,10 @@ public class StarCatchBarUI : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
+    private void Start()
+    {
+        UI_Game.Instance.OnTimerEnd += TimerEnd;
+    }
     public void TimerEnd()
     {
         StartCoroutine(StartStarCatch());
@@ -74,9 +76,8 @@ public class StarCatchBarUI : MonoBehaviour
         WellDoneMaxX = WellDoneMinX + 500;
         TriedMaxX = TriedMinX + 900;
 
-        zoomFeedback.DoZoomEffect(14f, 6f);
         canvas.DOFade(1f, 1f);
-
+        
         yield return new WaitForSecondsRealtime(1f);
         starcatchtimertext.text = "2";
 

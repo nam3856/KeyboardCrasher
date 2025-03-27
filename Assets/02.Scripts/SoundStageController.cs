@@ -15,6 +15,8 @@ public class SoundStageController : MonoBehaviour
     [SerializeField] private AudioClip mainBGM;
     [SerializeField] private AudioClip slowSFX;
 
+    public static SoundStageController Instance;
+
     public AudioMixer audioMixer;
 
     [Header("Settings")]
@@ -22,40 +24,33 @@ public class SoundStageController : MonoBehaviour
 
     private bool hasStarted = false;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
-        UI_Game.Instance.OnTimerStart += TimerStart;
+        UI_Game.Instance.OnTimerEnd += TimerEnd;
         PlayBGM(beforeStartBGM, loop: true);
     }
 
-    private void TimerStart()
+    public void StartIntroBGM()
     {
         PlayBGM(introBGM, loop: false);
-        StartSequence().Forget();
     }
 
-    private async UniTaskVoid StartSequence()
+    private void TimerEnd()
     {
-        if (hasStarted) return;
-        hasStarted = true;
-
-        await UniTask.Delay(10000, DelayType.UnscaledDeltaTime);
         WaitAndStartDrum().Forget();
     }
 
     private async UniTaskVoid WaitAndStartDrum()
     {
-        //slowSfxSource.PlayOneShot(slowSFX);
-
-        // 드럼 루프 대신 스타캐치 바로 시작 (드럼은 제거되었거나 뒤에 위치할 수도 있음)
-        StarCatchBarUI.Instance.TimerEnd();
-
         ApplyLowPass();
         await UniTask.Delay(6000, DelayType.UnscaledDeltaTime);
         RemoveLowPass();
 
-        StarCatchBarUI.Instance.ForceStarCatchEnd();
-        PlayBGM(mainBGM, loop: true);
+        StarCatchUI.Instance.ForceStarCatchEnd();
     }
 
     public void ApplyLowPass()

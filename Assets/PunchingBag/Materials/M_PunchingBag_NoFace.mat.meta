@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 323a0b96bf0c84841812f7c7cd328efa
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 267225
+  packageName: Stylized Punching Bag (PBR/Unlit/Cel-Shaded/Simple)
+  packageVersion: 1.0
+  assetPath: Assets/PunchingBag/Materials/M_PunchingBag_NoFace.mat
+  uploadId: 652858

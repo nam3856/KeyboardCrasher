@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: a5b7e94b680fd3e438adf286497474fc
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 625f186215c104763be7675aa2d941aa, type: 3}
+AssetOrigin:
+  serializedVersion: 1
+  productId: 267225
+  packageName: Stylized Punching Bag (PBR/Unlit/Cel-Shaded/Simple)
+  packageVersion: 1.0
+  assetPath: Assets/PunchingBag/Shaders/SG_Face_PBR.shadergraph
+  uploadId: 652858

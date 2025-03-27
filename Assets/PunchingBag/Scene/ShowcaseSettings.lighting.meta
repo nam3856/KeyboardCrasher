@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b0f6e340bd6c9b84896bcd5a8c5acb76
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 4890085278179872738
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 267225
+  packageName: Stylized Punching Bag (PBR/Unlit/Cel-Shaded/Simple)
+  packageVersion: 1.0
+  assetPath: Assets/PunchingBag/Scene/ShowcaseSettings.lighting
+  uploadId: 652858

@@ -9,7 +9,7 @@ public class CameraFollow : MonoBehaviour
 
     private void Start()
     {
-        StarCatchBarUI.Instance.OnStarCatchCompleted += Set;
+        StarCatchUI.Instance.OnStarCatchCompleted += Set;
     }
     void Set()
     {

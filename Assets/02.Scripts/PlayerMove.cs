@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -22,6 +23,7 @@ public class PlayerMove : MonoBehaviour
     public AudioSource HitAudioSource;
     public AudioClip[] attackStartSounds;
     public AudioClip[] attackHitSounds;
+    public Animator PunchBagAnimator;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     private void Awake()
@@ -57,6 +59,11 @@ public class PlayerMove : MonoBehaviour
     {
         inputActions.Player.Attack.performed -= OnAttackPerformed;
         inputActions.Disable();
+        UniTask.RunOnThreadPool(async () =>
+        {
+            await UniTask.Delay(50);
+            CameraZoomFeedback.DoZoomEffect(16, 5.95f);
+        });
         An.SetTrigger("Charge");
     }
 
@@ -79,8 +86,13 @@ public class PlayerMove : MonoBehaviour
         if (crit <= 35f)
         {
             UI_Game.Instance.ShowCriticalText();
-            //CameraShake.Shake();
+            PunchBagAnimator.SetBool("Critical", true);
         }
+        else
+        {
+            PunchBagAnimator.SetBool("Critical", false);
+        }
+        PunchBagAnimator.SetTrigger("Hit");
         UI_Game.Instance.Add();
 
     }

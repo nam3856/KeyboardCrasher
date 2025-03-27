@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bf5fe71757bf9c140a56d19e74984575
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 267225
+  packageName: Stylized Punching Bag (PBR/Unlit/Cel-Shaded/Simple)
+  packageVersion: 1.0
+  assetPath: Assets/PunchingBag/Demo/Animations/Down_Loop.controller
+  uploadId: 652858

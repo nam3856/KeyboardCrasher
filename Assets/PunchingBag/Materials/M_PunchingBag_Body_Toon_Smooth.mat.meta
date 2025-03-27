@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: cd8b5fd5cd687ce4696a721bdbcc52c9
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 267225
+  packageName: Stylized Punching Bag (PBR/Unlit/Cel-Shaded/Simple)
+  packageVersion: 1.0
+  assetPath: Assets/PunchingBag/Materials/M_PunchingBag_Body_Toon_Smooth.mat
+  uploadId: 652858

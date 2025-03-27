@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
+using System.Threading.Tasks.Sources;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,9 +22,12 @@ public class UI_Game : MonoBehaviour
 
     public GameObject CriticalText;
 
-    public GameObject InstructionPanel;
-    public TextMeshProUGUI InstructionText;
     public TextMeshProUGUI TimerText;
+
+
+    public TextMeshProUGUI StartTimeText;
+    public TextMeshProUGUI StartInstructionText;
+    public TextMeshProUGUI StartTimerText;
 
     public Canvas StarCatchUI;
 
@@ -43,12 +47,11 @@ public class UI_Game : MonoBehaviour
         }
 
         StartButton.onClick.AddListener(StartTimer);
-        InstructionPanel.SetActive(false);
     }
 
     private void Start()
     {
-        StarCatchBarUI.Instance.OnStarCatchCompleted += StartChase;
+        global::StarCatchUI.Instance.OnStarCatchCompleted += StartChase;
     }
 
     public void StartChase()
@@ -60,17 +63,11 @@ public class UI_Game : MonoBehaviour
     {
         while (sandBag.GetComponent<Rigidbody2D>().linearVelocity != Vector2.zero)
         {
-            ComboText.text = $"{sandBag.transform.position.x:F2}M";
+            ComboText.text = $"{sandBag.transform.position.x + 4.726f:F2}M";
             await UniTask.Yield();
         }
     }
 
-    void ShowGameInstructions()
-    {
-        string instructions = "";
-        InstructionText.text = instructions;
-        InstructionPanel.SetActive(true);
-    }
 
     public void Add()
     {
@@ -97,12 +94,31 @@ public class UI_Game : MonoBehaviour
     {
         StartButton.gameObject.SetActive(false);
         Timer = 10;
-        OnTimerStart?.Invoke();
         TimerUniTask().Forget();
+        SoundStageController.Instance.StartIntroBGM();
     }
 
     public async UniTaskVoid TimerUniTask()
     {
+        StartTimerText.gameObject.SetActive(true);
+        StartTimeText.gameObject.SetActive(true);
+        await UniTask.WaitForSeconds(1);
+        StartInstructionText.gameObject.SetActive(true);
+        sandBag.GetComponent<Animator>().SetTrigger("start");
+        await UniTask.WaitForSeconds(1);
+        StartTimeText.text = "2";
+        await UniTask.WaitForSeconds(1);
+        StartTimeText.text = "1";
+        await UniTask.WaitForSeconds(1);
+        StartTimeText.text = "START!";
+
+        OnTimerStart?.Invoke();
+        StartTimeText.transform.DOScale(2f, 0.01f).OnComplete(() => StartTimeText.transform.DOScale(1f, 0.2f).SetEase(Ease.InOutExpo).OnComplete(() =>
+        {
+            StartTimeText.gameObject.SetActive(false);
+        }));
+
+        StartTimerText.gameObject.SetActive(false);
         while (Timer > 0)
         {
             TimerText.text = Timer.ToString("F3");
@@ -111,6 +127,7 @@ public class UI_Game : MonoBehaviour
             await UniTask.Yield();
         }
 
+        StartInstructionText.gameObject.SetActive(false);
         TimerText.gameObject.SetActive(false);
         OnTimerEnd?.Invoke();
         StarCatchGo();
