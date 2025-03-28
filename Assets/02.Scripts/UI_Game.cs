@@ -57,7 +57,7 @@ public class UI_Game : MonoBehaviour
         BestScore = bestScore;
         BestScoreText.text = $"{BestScore:F3}M";
         Save();
-        RankingManager.Instance.UploadScore("user123", "깽미니", BestScore);
+        RankingManager.Instance.UploadScore(PlayerManager.Instance.playerID, "깽미니", BestScore);
         RankingManager.Instance.GetTopRankings();
         await UniTask.Delay(200);
         NewRecordText.gameObject.SetActive(true);
@@ -86,7 +86,8 @@ public class UI_Game : MonoBehaviour
     private void Start()
     {
         string saved = PlayerPrefs.GetString("BestScore");
-        if (string.IsNullOrEmpty(saved))
+        Debug.Log(saved);
+        if (!string.IsNullOrEmpty(saved))
         {
             Debug.Log(saved);
             if(float.TryParse(saved, out BestScore))
@@ -98,6 +99,10 @@ public class UI_Game : MonoBehaviour
             {
                 Debug.Log("로드실패");
             }
+        }
+        else
+        {
+            Debug.Log("로드 실패 - string is null or empty");
         }
         global::StarCatchUI.Instance.OnStarCatchCompleted += StartChase;
         TitleText.transform.DOScale(0.8f, 0.5f).SetEase(Ease.InOutElastic).SetLoops(-1, LoopType.Yoyo);

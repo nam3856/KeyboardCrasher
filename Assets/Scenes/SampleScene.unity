@@ -11783,7 +11783,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4613943241759619989, guid: 3c226ff8ab91c6649bf985b8a52c9ee5, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.2588193
+      value: 0.2588194
       objectReference: {fileID: 0}
     - target: {fileID: 4613943241759619989, guid: 3c226ff8ab91c6649bf985b8a52c9ee5, type: 3}
       propertyPath: m_LocalRotation.x
@@ -17369,6 +17369,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8468160671210780227, guid: aa69efdf8fea2b040974f2daa8dcbc08, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8728673809089958370}
+    - targetCorrespondingSourceObject: {fileID: 8468160671210780227, guid: aa69efdf8fea2b040974f2daa8dcbc08, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8728673809089958377}
   m_SourcePrefab: {fileID: 100100000, guid: aa69efdf8fea2b040974f2daa8dcbc08, type: 3}
 --- !u!212 &8728673809089958369 stripped
 SpriteRenderer:
@@ -17477,6 +17480,19 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 371236687807851747, guid: aa69efdf8fea2b040974f2daa8dcbc08, type: 3}
   m_PrefabInstance: {fileID: 8728673809089958362}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8728673809089958377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 946864116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c912b17901d17564d9a238dc2661a44c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerID: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
