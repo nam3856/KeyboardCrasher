@@ -12,6 +12,8 @@ public class UI_Game : MonoBehaviour
     private Tween _tween;
     public float Timer = 10;
     public Image TimerBar;
+    public Image TimerBase;
+    public TextMeshProUGUI TimerText;
 
     public TextMeshProUGUI ComboText;
     public int Count;
@@ -22,7 +24,6 @@ public class UI_Game : MonoBehaviour
 
     public GameObject CriticalText;
 
-    public TextMeshProUGUI TimerText;
 
 
     public TextMeshProUGUI StartTimeText;
@@ -34,6 +35,7 @@ public class UI_Game : MonoBehaviour
     public event Action OnTimerEnd;
     public event Action OnTimerStart;
     public GameObject sandBag;
+    public CameraZoomFeedback CameraZoomFeedback;
 
     private void Awake()
     {
@@ -107,8 +109,13 @@ public class UI_Game : MonoBehaviour
         sandBag.GetComponent<Animator>().SetTrigger("start");
         await UniTask.WaitForSeconds(1);
         StartTimeText.text = "2";
+
+        TimerBar.GetComponent<RectTransform>().DOAnchorPosY(-50f, 1f).SetEase(Ease.OutBack);
+        TimerBase.GetComponent<RectTransform>().DOAnchorPosY(-50f, 1f).SetEase(Ease.OutBack);
+        TimerText.GetComponent<RectTransform>().DOAnchorPosY(0f, 1f).SetEase(Ease.OutBack);
         await UniTask.WaitForSeconds(1);
         StartTimeText.text = "1";
+
         await UniTask.WaitForSeconds(1);
         StartTimeText.text = "START!";
 
@@ -130,6 +137,7 @@ public class UI_Game : MonoBehaviour
         StartInstructionText.gameObject.SetActive(false);
         TimerText.gameObject.SetActive(false);
         OnTimerEnd?.Invoke();
+        ComboText.text = "";
         StarCatchGo();
     }
 
@@ -149,6 +157,8 @@ public class UI_Game : MonoBehaviour
             TimerBar.fillAmount = Mathf.Clamp(Timer / 3f, 0, 1f);
             await UniTask.Yield();
         }
+
+        CameraZoomFeedback.SmoothZoom(55, 0.1f).Forget();
     }
 
     public void ShowCriticalText()

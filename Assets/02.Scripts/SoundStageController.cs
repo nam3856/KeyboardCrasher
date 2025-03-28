@@ -53,6 +53,11 @@ public class SoundStageController : MonoBehaviour
         StarCatchUI.Instance.ForceStarCatchEnd();
     }
 
+    public void PlayEffectSound()
+    {
+        slowSfxSource.PlayOneShot(slowSFX);
+    }
+
     public void ApplyLowPass()
     {
         audioMixer.SetFloat("LowpassFreq", 800f);

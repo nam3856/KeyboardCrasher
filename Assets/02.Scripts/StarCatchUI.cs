@@ -3,6 +3,9 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 using TMPro;
+using Cysharp.Threading;
+using Cysharp.Threading.Tasks;
+using System.Threading.Tasks;
 
 public enum SuccessRate
 {
@@ -39,6 +42,8 @@ public class StarCatchUI : MonoBehaviour
     public static StarCatchUI Instance;
     public SuccessRate Howmuch;
     public TextMeshProUGUI starcatchtimertext;
+    public ScreenFlashEffect Volume;
+    public CameraZoomFeedback cameraZoomFeedback;
 
     private void Awake()
     {
@@ -64,7 +69,7 @@ public class StarCatchUI : MonoBehaviour
     {
         Time.timeScale = 0.3f;
 
-        x = UnityEngine.Random.Range(-100, 1100);
+        x = UnityEngine.Random.Range(0, 1100);
         SuccessZone.anchoredPosition = new Vector2(x, -253);
 
         TriedMinX = x;
@@ -77,6 +82,7 @@ public class StarCatchUI : MonoBehaviour
         TriedMaxX = TriedMinX + 900;
 
         canvas.DOFade(1f, 1f);
+        Volume.VignetteStart().Forget();
         
         yield return new WaitForSecondsRealtime(1f);
         starcatchtimertext.text = "2";
@@ -124,9 +130,24 @@ public class StarCatchUI : MonoBehaviour
             GetComponent<CanvasGroup>().alpha = 0f;
         }
 
+        GetComponent<CanvasGroup>().alpha = 0f;
         Debug.Log(Howmuch);
+        FlyGo().Forget();
+    }
 
+    public async UniTaskVoid FlyGo()
+    {
         Time.timeScale = 1f;
+        Volume.VignetteStart(0, 0.01f).Forget();
+        SoundStageController.Instance.PlayEffectSound();
+        if (Howmuch >= SuccessRate.Success)
+        {
+            Volume.FlashBloom(100f, 0.3f).Forget();
+        }
+        cameraZoomFeedback.SmoothZoom(30, 0.3f).Forget();
+        await UniTask.Delay(350);
+
+
         OnStarCatchCompleted?.Invoke();
     }
 

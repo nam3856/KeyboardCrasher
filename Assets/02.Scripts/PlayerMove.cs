@@ -62,8 +62,8 @@ public class PlayerMove : MonoBehaviour
         UniTask.RunOnThreadPool(async () =>
         {
             await UniTask.Delay(50);
-            CameraZoomFeedback.DoZoomEffect(16, 5.95f);
         });
+        CameraZoomFeedback.SmoothZoom(30, 2f).Forget();
         An.SetTrigger("Charge");
     }
 
@@ -81,10 +81,12 @@ public class PlayerMove : MonoBehaviour
         An.speed = normalizedSpeed;
 
         crit = Random.Range(30f, 50f);
-        StartCoroutine(CamZoomCoroutine(crit));
+        CameraShake.Shake();
 
         if (crit <= 35f)
         {
+
+            CameraZoomFeedback.SmoothZoomEffect(crit, 0.01f).Forget();
             UI_Game.Instance.ShowCriticalText();
             PunchBagAnimator.SetBool("Critical", true);
         }
@@ -130,19 +132,7 @@ public class PlayerMove : MonoBehaviour
 
     public void StartCameraZoom(float val)
     {
-        if (val == 0)
-        {
-            StartCoroutine(CamZoomCoroutine(crit));
-        }
-        else
-        {
-            StartCoroutine(CamZoomCoroutine(val));
-        }
+        Debug.Log("StartCameraZoom");
     }
 
-    private IEnumerator CamZoomCoroutine(float rnd)
-    {
-        yield return new WaitForSeconds(0.1f);
-        CameraZoomFeedback.DoZoomEffect(rnd, Random.Range(0.04f, 0.14f));
-    }
 }
