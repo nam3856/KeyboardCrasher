@@ -1,18 +1,26 @@
 using Cysharp.Threading.Tasks;
+using System;
 using UnityEngine;
 
 public class PunchingBag : MonoBehaviour
 {
-    public Rigidbody2D Rb;
-    public Vector2[] directions;
+    public event Action<float> OnPunchingBagMoveEnd;
+
     [SerializeField]
-    private float _time;
+    private Rigidbody2D _rigidbody2D;
+    public Vector2[] directions;
+    public float[] multiplers;
 
     public GameObject HitParticle;
+    public ParticleSystem HitParticleSystem;
     public GameObject CrashParticlePrefab;
     public GameObject FlyParticle;
     public ParticleSystem FlyParticleSystem;
-    public GameObject UIParticle;
+
+
+
+    private float _time;
+    private bool _onPunchingBagMoveEnd;
     private void Start()
     {
         StarCatchUI.Instance.OnStarCatchCompleted += FlyAway;
@@ -20,22 +28,36 @@ public class PunchingBag : MonoBehaviour
 
     public Animator animator;
 
-    private void FlyAway()
+    private void FlyAway(SuccessRate rate)
     {
 
         HitParticle.SetActive(true);
         animator.SetTrigger("Fly");
-        Vector2 direction = directions[(int)StarCatchUI.Instance.Howmuch].normalized;
-        if (StarCatchUI.Instance.Howmuch == SuccessRate.Bad)
+        Vector2 direction = directions[(int)rate].normalized;
+        var emission = HitParticleSystem.emission;
+
+        var burst = new ParticleSystem.Burst[1];
+        if (rate < SuccessRate.Bad)
         {
-            if (Random.Range(0, 101) == 1)
+            burst[0] = new ParticleSystem.Burst(0.0f, 200, 4-(int)rate, 0.01f);
+            emission.SetBursts(burst);
+        }
+        else
+        {
+            burst[0] = new ParticleSystem.Burst(0.0f, 50);
+            emission.SetBursts(burst);
+        }
+        
+        if (rate == SuccessRate.Bad)
+        {
+            if (UnityEngine.Random.Range(0, 101) == 1)
             {
                 direction = directions[5];
             }
         }
-        Rb.simulated = true;
-        Rb.AddForce(direction * UI_Game.Instance.Count * StarCatchUI.Instance.multipler, ForceMode2D.Impulse);
-        Rb.AddTorque(UI_Game.Instance.Count * 10);
+        _rigidbody2D.simulated = true;
+        _rigidbody2D.AddForce(direction * UI_Game.Instance.ComboCount * multiplers[(int)rate], ForceMode2D.Impulse);
+        _rigidbody2D.AddTorque(UI_Game.Instance.ComboCount * 10);
         FlyParticle.SetActive(true);
     }
 
@@ -64,44 +86,22 @@ public class PunchingBag : MonoBehaviour
         main.loop = false;
     }
     bool p = false;
-    bool notSaved = true;
     public void Stay()
     {
         _time += Time.deltaTime;
         if (_time > 0.6f)
         {
             SetAnimation().Forget();
-            if (Rb.linearVelocity == Vector2.zero)
+            if (_rigidbody2D.linearVelocity == Vector2.zero)
             {
-                if (!UIParticle.activeSelf && notSaved)
+                if (!_onPunchingBagMoveEnd)
                 {
-                    //저장시점
-                    SaveStart().Forget();
+                    _onPunchingBagMoveEnd = true;
+                    // 이동 끝
+                    OnPunchingBagMoveEnd?.Invoke(transform.position.x);
                 }
             }
         }
-    }
-
-    public async UniTaskVoid SaveStart()
-    {
-        if (!notSaved) return;
-        notSaved = false;
-
-        UIParticle.SetActive(true);
-        float score = transform.position.x + 4.726f;
-
-        if (score > UI_Game.Instance.BestScore)
-        {
-            // 1. BEST SCORE 텍스트 표시
-            UI_Game.Instance.BestScoreText.gameObject.SetActive(true);
-            if(UI_Game.Instance.BestScore < transform.position.x + 4.726f)
-            {
-                UI_Game.Instance.UpdateBestScoreAndShowNewRecordText(transform.position.x + 4.726f).Forget();
-            }
-        }
-
-
-        
     }
 
     public void Exit()

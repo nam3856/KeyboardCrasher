@@ -435,6 +435,16 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 66011385}
   m_CullTransparentMesh: 1
+--- !u!1 &68466697 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3406079758773358507, guid: ce83548be2055c64baa5f92b363aca1c, type: 3}
+  m_PrefabInstance: {fileID: 7545702253255906446}
+  m_PrefabAsset: {fileID: 0}
+--- !u!50 &68466700 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 4137060242227435867, guid: ce83548be2055c64baa5f92b363aca1c, type: 3}
+  m_PrefabInstance: {fileID: 7545702253255906446}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &133196627
 GameObject:
   m_ObjectHideFlags: 0
@@ -2923,6 +2933,38 @@ AudioSource:
   m_CorrespondingSourceObject: {fileID: 125802179073131607, guid: ce83548be2055c64baa5f92b363aca1c, type: 3}
   m_PrefabInstance: {fileID: 7545702253255906446}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1260127316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260127309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d6fef8ebbe571748982d1941a14b523, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rigidbody2D: {fileID: 68466700}
+  directions:
+  - {x: 1, y: 1}
+  - {x: 1, y: 0.8}
+  - {x: 1, y: 0.6}
+  - {x: 1, y: 0.4}
+  - {x: 1, y: 0.1}
+  - {x: 0, y: 1}
+  multiplers:
+  - 15
+  - 10
+  - 5
+  - 3
+  - 0.5
+  HitParticle: {fileID: 2106621809}
+  HitParticleSystem: {fileID: 0}
+  CrashParticlePrefab: {fileID: 8177822198640460512, guid: e21ecc4afc8b66445a63af6a24f4d23a, type: 3}
+  FlyParticle: {fileID: 1937640852}
+  FlyParticleSystem: {fileID: 1937640854}
+  animator: {fileID: 1260127313}
 --- !u!1 &1329174536
 GameObject:
   m_ObjectHideFlags: 0
@@ -3940,7 +3982,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1694907596
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3950,7 +3992,7 @@ RectTransform:
   m_GameObject: {fileID: 1694907595}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 699153864}
@@ -3958,7 +4000,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 478, y: -1}
+  m_AnchoredPosition: {x: 555, y: -358}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1694907597
@@ -4395,7 +4437,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4033412786151888123, guid: 49057b33ea71fbb4da4e8f02a8db9f28, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4123381426564554493, guid: 49057b33ea71fbb4da4e8f02a8db9f28, type: 3}
       propertyPath: m_Enabled
@@ -4913,6 +4955,16 @@ RectTransform:
   m_AnchoredPosition: {x: -2.68, y: 2.42}
   m_SizeDelta: {x: 10, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1937640852 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 996855937867612243, guid: ce83548be2055c64baa5f92b363aca1c, type: 3}
+  m_PrefabInstance: {fileID: 7545702253255906446}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &1937640854 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 6104451522587504168, guid: ce83548be2055c64baa5f92b363aca1c, type: 3}
+  m_PrefabInstance: {fileID: 7545702253255906446}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1942879829
 GameObject:
   m_ObjectHideFlags: 0
@@ -5041,28 +5093,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 851c14eb6b9411841a4df05164b858d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TitleText: {fileID: 990199618}
+  StartButton: {fileID: 66011387}
   Timer: 10
   TimerBar: {fileID: 1738590596}
   TimerBase: {fileID: 366947229}
   TimerText: {fileID: 611431506}
-  ComboText: {fileID: 1625869917}
-  Count: 0
-  CriticalUI: {fileID: 1907794682}
-  InstructionButton: {fileID: 0}
-  StartButton: {fileID: 66011387}
-  CriticalText: {fileID: 3325787018035509370, guid: 7d4ad00783b5800468f3e819a7fd3560, type: 3}
-  StarCatchTimerParticle: {fileID: 1848511780}
-  StarCatchTimerParticleSystem: {fileID: 649288120}
   StartTimeText: {fileID: 481614873}
   StartInstructionText: {fileID: 543785155}
   StartTimerText: {fileID: 1203922275}
+  ComboText: {fileID: 1625869917}
+  ComboCount: 0
+  CriticalUI: {fileID: 1907794682}
+  CriticalText: {fileID: 3325787018035509370, guid: 7d4ad00783b5800468f3e819a7fd3560, type: 3}
   StarCatchUI: {fileID: 1583530506}
-  sandBag: {fileID: 1260127309}
-  CameraZoomFeedback: {fileID: 519420036}
-  TitleText: {fileID: 990199618}
+  StarCatchTimerParticle: {fileID: 1848511780}
+  StarCatchTimerParticleSystem: {fileID: 649288120}
   BestScore: 0
   NewRecordText: {fileID: 2063602245}
   BestScoreText: {fileID: 1347143794}
+  ScoreParticle: {fileID: 1694907595}
+  CameraZoomFeedback: {fileID: 519420036}
+  PunchingBag: {fileID: 68466697}
 --- !u!95 &1956947880 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5798256368260700895, guid: ce83548be2055c64baa5f92b363aca1c, type: 3}
@@ -10179,6 +10231,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 549520258587002719, guid: ce83548be2055c64baa5f92b363aca1c, type: 3}
+      propertyPath: child
+      value: 
+      objectReference: {fileID: 1260127316}
     - target: {fileID: 1759197216601647962, guid: ce83548be2055c64baa5f92b363aca1c, type: 3}
       propertyPath: UIParticle
       value: 
@@ -10231,10 +10287,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1759197216601647962, guid: ce83548be2055c64baa5f92b363aca1c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8047579166548846358, guid: ce83548be2055c64baa5f92b363aca1c, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 1260127316}
   m_SourcePrefab: {fileID: 100100000, guid: ce83548be2055c64baa5f92b363aca1c, type: 3}
 --- !u!1001 &8728673809089958362
 PrefabInstance:

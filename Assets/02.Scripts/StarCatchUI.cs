@@ -16,6 +16,9 @@ public enum SuccessRate
 
 public class StarCatchUI : MonoBehaviour
 {
+
+    public static StarCatchUI Instance;
+
     [SerializeField] private RectTransform pointer;
     [SerializeField] private RectTransform bar;
     [SerializeField] private float speed = 1200f;
@@ -30,14 +33,11 @@ public class StarCatchUI : MonoBehaviour
     [SerializeField] private float x;
     [SerializeField] private CanvasGroup canvas;
 
-    public float multipler = 0.1f;
-    public float[] multiplers;
     public RectTransform SuccessZone;
-    public event Action OnStarCatchCompleted;
+    public event Action<SuccessRate> OnStarCatchCompleted;
 
     private bool goingRight = true;
     private bool isPlaying = false;
-    public static StarCatchUI Instance;
     public SuccessRate Howmuch;
     public TextMeshProUGUI starcatchtimertext;
     public ScreenFlashEffect Volume;
@@ -127,13 +127,11 @@ public class StarCatchUI : MonoBehaviour
                 Howmuch = SuccessRate.Bad;
             }
 
-            multipler = multiplers[(int)Howmuch];
             isPlaying = false;
             GetComponent<CanvasGroup>().alpha = 0f;
         }
 
         GetComponent<CanvasGroup>().alpha = 0f;
-        Debug.Log(Howmuch);
         FlyGo().Forget();
     }
 
@@ -141,20 +139,25 @@ public class StarCatchUI : MonoBehaviour
     {
         Time.timeScale = 1f;
         Volume.VignetteStart(0, 0.01f).Forget();
-        SoundStageController.Instance.PlayEffectSound();
         if (Howmuch >= SuccessRate.Success)
         {
             Volume.FlashBloom(100f, 0.3f).Forget();
+
+            cameraZoomFeedback.SmoothZoomEffect(30, 0.3f).Forget();
         }
-        cameraZoomFeedback.SmoothZoomEffect(30, 0.3f).Forget();
+        else
+        {
+            cameraZoomFeedback.SmoothZoomEffect(50, 0.3f).Forget();
+        }
+
+        source.PlayOneShot(clip);
         await UniTask.Delay(290);
         PlayerAnimator.SetInteger("rand", 2);
         PlayerAnimator.SetTrigger("Attack");
-
-        source.PlayOneShot(clip);
+        SoundStageController.Instance.PlayEffectSound();
         await UniTask.Delay(60);
 
-        OnStarCatchCompleted?.Invoke();
+        OnStarCatchCompleted?.Invoke(Howmuch);
     }
 
     private void Update()
@@ -193,10 +196,8 @@ public class StarCatchUI : MonoBehaviour
                 Howmuch = SuccessRate.Bad;
             }
 
-            multipler = multiplers[(int)Howmuch];
             isPlaying = false;
 
-            Debug.Log(Howmuch);
             HideUI().Forget();
         }
     }

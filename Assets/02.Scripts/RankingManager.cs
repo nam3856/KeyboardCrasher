@@ -45,7 +45,7 @@ public class RankingManager : MonoBehaviour
             playerId = playerId,
             nickname = nickname,
             bestScore = UI_Game.Instance.BestScore,
-            bestCombo = UI_Game.Instance.Count
+            bestCombo = UI_Game.Instance.ComboCount
         };
 
         StartCoroutine(UploadScoreCoroutine(data));

@@ -10,7 +10,7 @@ public class CameraFollow : MonoBehaviour
     {
         StarCatchUI.Instance.OnStarCatchCompleted += Set;
     }
-    void Set()
+    void Set(SuccessRate rate)
     {
         var follow = cinemachineCamera.GetComponent<CinemachineFollow>();
         if (follow == null)
