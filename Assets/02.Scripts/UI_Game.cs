@@ -1,8 +1,10 @@
 using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks.Triggers;
 using DG.Tweening;
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class UI_Game : MonoBehaviour
@@ -38,6 +40,34 @@ public class UI_Game : MonoBehaviour
     public CameraZoomFeedback CameraZoomFeedback;
     public TextMeshProUGUI TitleText;
     public float BestScore = 0;
+    public TextMeshProUGUI NewRecordText;
+
+    public TextMeshProUGUI BestScoreText;
+
+    public async UniTaskVoid UpdateBestScoreAndShowNewRecordText(float bestScore)
+    {
+        float increase = 0.001f;
+        while(BestScore < (int)bestScore)
+        {
+            BestScore += increase;
+            BestScoreText.text = $"{BestScore:F3}M";
+            await UniTask.Yield();
+            increase *= 1.5f;
+        }
+        BestScore = bestScore;
+        BestScoreText.text = $"{BestScore:F3}M";
+        Save();
+        RankingManager.Instance.UploadScore("user123", "깽미니", BestScore);
+        RankingManager.Instance.GetTopRankings();
+        await UniTask.Delay(200);
+        NewRecordText.gameObject.SetActive(true);
+        NewRecordText.transform.DOScale(1f, 0.2f).SetEase(Ease.OutElastic);
+        // TODO: 효과음 추가
+
+
+    }
+
+
 
     private void Awake()
     {
@@ -58,7 +88,16 @@ public class UI_Game : MonoBehaviour
         string saved = PlayerPrefs.GetString("BestScore");
         if (string.IsNullOrEmpty(saved))
         {
-            BestScore = float.Parse(saved);
+            Debug.Log(saved);
+            if(float.TryParse(saved, out BestScore))
+            {
+                Debug.Log("변환성공");
+                BestScoreText.text = $"{BestScore:F3}M";
+            }
+            else
+            {
+                Debug.Log("로드실패");
+            }
         }
         global::StarCatchUI.Instance.OnStarCatchCompleted += StartChase;
         TitleText.transform.DOScale(0.8f, 0.5f).SetEase(Ease.InOutElastic).SetLoops(-1, LoopType.Yoyo);
@@ -167,7 +206,6 @@ public class UI_Game : MonoBehaviour
             await UniTask.Yield();
         }
     }
-
     public void StarCatchGo()
     {
         StarForceTimer().Forget();

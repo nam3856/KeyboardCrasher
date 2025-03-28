@@ -65,24 +65,44 @@ public class SandBag : MonoBehaviour
         main.loop = false;
     }
     bool p = false;
+    bool notSaved = true;
     public void Stay()
     {
         _time += Time.deltaTime;
-
         if (_time > 0.6f)
         {
             SetAnimation().Forget();
             if (Rb.linearVelocity == Vector2.zero)
             {
-                if (!UIParticle.activeSelf)
+                if (!UIParticle.activeSelf && notSaved)
                 {
-                    UIParticle.SetActive(true);
-
-                    UI_Game.Instance.BestScore = Mathf.Max(transform.position.x + 4.726f, UI_Game.Instance.BestScore);
-                    UI_Game.Instance.Save();
+                    //저장시점
+                    SaveStart().Forget();
                 }
             }
         }
+    }
+
+    public async UniTaskVoid SaveStart()
+    {
+        if (!notSaved) return;
+        notSaved = false;
+
+        UIParticle.SetActive(true);
+        float score = transform.position.x + 4.726f;
+
+        if (score > UI_Game.Instance.BestScore)
+        {
+            // 1. BEST SCORE 텍스트 표시
+            UI_Game.Instance.BestScoreText.gameObject.SetActive(true);
+            if(UI_Game.Instance.BestScore < transform.position.x + 4.726f)
+            {
+                UI_Game.Instance.UpdateBestScoreAndShowNewRecordText(transform.position.x + 4.726f).Forget();
+            }
+        }
+
+
+        
     }
 
     public void Exit()
