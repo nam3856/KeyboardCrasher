@@ -57,7 +57,7 @@ public class PunchingBag : MonoBehaviour
         }
         _rigidbody2D.simulated = true;
         _rigidbody2D.AddForce(direction * UI_Game.Instance.ComboCount * multiplers[(int)rate], ForceMode2D.Impulse);
-        _rigidbody2D.AddTorque(UI_Game.Instance.ComboCount * 10);
+        _rigidbody2D.AddTorque(UI_Game.Instance.ComboCount * 5);
         FlyParticle.SetActive(true);
     }
 

@@ -85,7 +85,8 @@ public class StarCatchUI : MonoBehaviour
 
         canvas.DOFade(1f, 1f);
         Volume.VignetteStart().Forget();
-        
+
+        starcatchtimertext.text = "3";
         yield return new WaitForSecondsRealtime(1f);
         starcatchtimertext.text = "2";
 
@@ -150,11 +151,13 @@ public class StarCatchUI : MonoBehaviour
             cameraZoomFeedback.SmoothZoomEffect(50, 0.3f).Forget();
         }
 
+        SoundStageController.Instance.PlayEffectSound();
+        await UniTask.Delay(100);
+
         source.PlayOneShot(clip);
-        await UniTask.Delay(290);
+        await UniTask.Delay(90);
         PlayerAnimator.SetInteger("rand", 2);
         PlayerAnimator.SetTrigger("Attack");
-        SoundStageController.Instance.PlayEffectSound();
         await UniTask.Delay(60);
 
         OnStarCatchCompleted?.Invoke(Howmuch);

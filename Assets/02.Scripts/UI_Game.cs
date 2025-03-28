@@ -13,6 +13,12 @@ public class UI_Game : MonoBehaviour
     [Header("Title")]
     public TextMeshProUGUI TitleText;
     public Button StartButton;
+    public Button RandomButton;
+    public Button RankingButton;
+    public TMP_InputField NicknameInput;
+    public string Name;
+    public GameObject MainPanel;
+    public TextMeshProUGUI NicknameText;
 
     [Header("Timer")]
     public float Timer = 10;
@@ -56,34 +62,11 @@ public class UI_Game : MonoBehaviour
     public event Action OnTimerEnd;
     public event Action OnTimerStart;
     public event Action<float> OnBestScoreChanged;
-    public void UpdateBestScoreAndShowNewRecordText(float score)
-    {
-        if (BestScore < score)
-        {
-            BestScore = score;
-            UpdateBestScore(BestScore,score).Forget();
-            ScoreParticle.SetActive(true);
-        }
-    }
-    public async UniTaskVoid UpdateBestScore(float prevScore,float newScore)
-    {
-        OnBestScoreChanged?.Invoke(BestScore);
 
-        float increase = 0.001f;
-        while(prevScore < (int)newScore)
-        {
-            prevScore += increase;
-            BestScoreText.text = $"{prevScore:F3}M";
-            await UniTask.Yield();
-            increase *= 1.5f;
-        }
-        BestScoreText.text = $"{newScore:F3}M";
-        await UniTask.Delay(200);
-
-        NewRecordText.gameObject.SetActive(true);
-        NewRecordText.transform.DOScale(1f, 0.2f).SetEase(Ease.OutElastic);
-        // TODO: 효과음 추가
-    }
+    [Header("Ranking")]
+    public GameObject RankingPanel;
+    public GameObject RankingEntryTemplate;
+    
 
 
 
@@ -100,9 +83,16 @@ public class UI_Game : MonoBehaviour
 
         StartButton.onClick.AddListener(StartTimer);
 
+        RandomButton.onClick.AddListener(SetRandomNickname);
+
         SequenceInit();
     }
 
+    private void SetRandomNickname()
+    {
+        string nickname = NicknameGenerator.GenerateKoreanNickname();
+        NicknameInput.text = nickname;
+    }
     private void SequenceInit()
     {
         _successTextTweenSequence = new Sequence[5];
@@ -147,11 +137,24 @@ public class UI_Game : MonoBehaviour
             else
             {
                 Debug.Log("로드실패");
+
+                BestScoreText.text = $"{0:F3}M";
             }
         }
         else
         {
             Debug.Log("로드 실패 - string is null or empty");
+
+            BestScoreText.text = $"{0:F3}M";
+        }
+        string name = PlayerPrefs.GetString("Name");
+        if(!string.IsNullOrEmpty(name))
+        {
+            Name = name;
+            RandomButton.gameObject.SetActive(false);
+            NicknameInput.gameObject.SetActive(false);
+            NicknameText.text = $"다시 오셨군요, {name} 님!";
+            NicknameText.gameObject.SetActive(true);
         }
         global::StarCatchUI.Instance.OnStarCatchCompleted += ShowSuccessRateText;
         TitleText.transform.DOScale(0.8f, 0.5f).SetEase(Ease.InOutElastic).SetLoops(-1, LoopType.Yoyo);
@@ -160,7 +163,6 @@ public class UI_Game : MonoBehaviour
 
     public void ShowSuccessRateText(SuccessRate rate)
     {
-        
         _successText.text = SuccessTexts[(int)rate];
 
         _successText.gameObject.SetActive(true);
@@ -171,16 +173,40 @@ public class UI_Game : MonoBehaviour
 
     public async UniTaskVoid ChaseX()
     {
-        while (PunchingBagObject.GetComponentInParent<Rigidbody2D>().linearVelocity != Vector2.zero)
+        while (PunchingBagObject.GetComponent<Rigidbody2D>().linearVelocity != Vector2.zero)
         {
             ComboText.text = $"{PunchingBagObject.transform.position.x + 4.726f:F2}M";
             await UniTask.Yield();
         }
     }
 
-    public void Save()
+    public void UpdateBestScoreAndShowNewRecordText(float score)
     {
-        PlayerPrefs.SetString("BestScore", BestScore.ToString());
+        if (BestScore < score)
+        {
+            BestScore = score;
+            UpdateBestScore(BestScore, score).Forget();
+            ScoreParticle.SetActive(true);
+        }
+    }
+    public async UniTaskVoid UpdateBestScore(float prevScore, float newScore)
+    {
+        OnBestScoreChanged?.Invoke(BestScore);
+
+        float increase = 0.001f;
+        while (prevScore < (int)newScore)
+        {
+            prevScore += increase;
+            BestScoreText.text = $"{prevScore:F3}M";
+            await UniTask.Yield();
+            increase += 0.001f;
+        }
+        BestScoreText.text = $"{newScore:F3}M";
+        await UniTask.Delay(200);
+
+        NewRecordText.gameObject.SetActive(true);
+        NewRecordText.transform.DOScale(1f, 0.2f).SetEase(Ease.OutElastic);
+        // TODO: 효과음 추가
     }
 
 
@@ -208,7 +234,26 @@ public class UI_Game : MonoBehaviour
     public void StartTimer()
     {
         TitleText.gameObject.SetActive(false);
-        StartButton.gameObject.SetActive(false);
+        MainPanel.SetActive(false);
+        if(string.IsNullOrEmpty(Name)) 
+        {
+            if (string.IsNullOrEmpty(NicknameInput.text))
+            {
+                Name = NicknameGenerator.GenerateKoreanNickname();
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(NicknameInput.text.Trim()))
+                {
+                    Name = NicknameGenerator.GenerateKoreanNickname();
+                }
+                else
+                {
+                    Name = NicknameInput.text.Trim();
+                }
+            }
+        }
+        PlayerPrefs.SetString("Name", Name);
         Timer = 10;
         TimerUniTask().Forget();
         SoundStageController.Instance.StartIntroBGM();
@@ -260,9 +305,9 @@ public class UI_Game : MonoBehaviour
     {
         PunchingBagScript.gameObject.GetComponent<Animator>().SetTrigger("start");
         float angle = -90f;
-        while(angle > -150f)
+        while(angle > -149f)
         {
-            angle = Mathf.Lerp(angle, -150f, Time.deltaTime * 2f);
+            angle = Mathf.Lerp(angle, -150f, Time.deltaTime * 4f);
             PunchingBagScript.gameObject.transform.localRotation = Quaternion.Euler(0f, angle, 0f);
             await UniTask.Yield();
         }
