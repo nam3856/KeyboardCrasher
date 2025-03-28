@@ -76,7 +76,6 @@ public class PlayerMove : MonoBehaviour
         rand = Random.Range(0, 2);
         float inputInterval = Time.time - lastInputTime;
         float normalizedSpeed = Mathf.Clamp(0.5f / inputInterval, 1f, 5f);
-        Debug.Log(normalizedSpeed);
         lastInputTime = Time.time;
         An.speed = normalizedSpeed;
 

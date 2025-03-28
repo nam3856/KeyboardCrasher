@@ -44,7 +44,7 @@ public class RankingManager : MonoBehaviour
         {
             playerId = playerId,
             nickname = nickname,
-            bestScore = UI_Game.Instance.BestScore,
+            bestScore = score,
             bestCombo = UI_Game.Instance.ComboCount
         };
 

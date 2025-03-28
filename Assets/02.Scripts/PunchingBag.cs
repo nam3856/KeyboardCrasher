@@ -98,7 +98,7 @@ public class PunchingBag : MonoBehaviour
                 {
                     _onPunchingBagMoveEnd = true;
                     // ¿Ãµø ≥°
-                    OnPunchingBagMoveEnd?.Invoke(transform.position.x);
+                    OnPunchingBagMoveEnd?.Invoke(transform.position.x+ 4.726f);
                 }
             }
         }

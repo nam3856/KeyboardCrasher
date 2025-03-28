@@ -50,7 +50,8 @@ public class UI_Game : MonoBehaviour
 
     
     public CameraZoomFeedback CameraZoomFeedback;
-    public GameObject PunchingBag;
+    public GameObject PunchingBagObject;
+    public PunchingBag PunchingBagScript;
 
     public event Action OnTimerEnd;
     public event Action OnTimerStart;
@@ -59,14 +60,14 @@ public class UI_Game : MonoBehaviour
     {
         if (BestScore < score)
         {
-            UpdateBestScore(BestScore,score).Forget();
             BestScore = score;
+            UpdateBestScore(BestScore,score).Forget();
             ScoreParticle.SetActive(true);
         }
     }
     public async UniTaskVoid UpdateBestScore(float prevScore,float newScore)
     {
-        OnBestScoreChanged?.Invoke(newScore);
+        OnBestScoreChanged?.Invoke(BestScore);
 
         float increase = 0.001f;
         while(prevScore < (int)newScore)
@@ -99,6 +100,11 @@ public class UI_Game : MonoBehaviour
 
         StartButton.onClick.AddListener(StartTimer);
 
+        SequenceInit();
+    }
+
+    private void SequenceInit()
+    {
         _successTextTweenSequence = new Sequence[5];
 
         for (int i = 0; i < _successTextTweenSequence.Length; i++)
@@ -116,10 +122,15 @@ public class UI_Game : MonoBehaviour
         _successTextTweenSequence[4].Append(_successText.DOColor(Color.clear, 0.01f));
         _successTextTweenSequence[4].Append(_successText.DOColor(SuccessColors[4], 0.2f)).Join(_successText.transform.DOScale(0.6f, 0.2f));
 
-        _successText.transform.localScale = new Vector3(1, 1, 1);
-        _successText.color = Color.white;
+        for (int i = 0; i < _successTextTweenSequence.Length; i++)
+        {
+            _successTextTweenSequence[i].Append(_successText.DOColor(Color.clear, 4f).SetEase(Ease.InOutExpo).OnComplete(() => {
+                _successText.transform.localScale = new Vector3(1, 1, 1);
+                _successText.color = Color.white;
+                _successText.gameObject.SetActive(false);
+            }));
+        }
     }
-
     private void Start()
     {
 
@@ -144,20 +155,25 @@ public class UI_Game : MonoBehaviour
         }
         global::StarCatchUI.Instance.OnStarCatchCompleted += ShowSuccessRateText;
         TitleText.transform.DOScale(0.8f, 0.5f).SetEase(Ease.InOutElastic).SetLoops(-1, LoopType.Yoyo);
+        PunchingBagScript.OnPunchingBagMoveEnd += UpdateBestScoreAndShowNewRecordText;
     }
 
     public void ShowSuccessRateText(SuccessRate rate)
     {
+        
         _successText.text = SuccessTexts[(int)rate];
+
+        _successText.gameObject.SetActive(true);
         _successTextTweenSequence[(int)rate].Play();
         ChaseX().Forget();
     }
 
+
     public async UniTaskVoid ChaseX()
     {
-        while (PunchingBag.GetComponentInParent<Rigidbody2D>().linearVelocity != Vector2.zero)
+        while (PunchingBagObject.GetComponentInParent<Rigidbody2D>().linearVelocity != Vector2.zero)
         {
-            ComboText.text = $"{PunchingBag.transform.position.x + 4.726f:F2}M";
+            ComboText.text = $"{PunchingBagObject.transform.position.x + 4.726f:F2}M";
             await UniTask.Yield();
         }
     }
@@ -242,12 +258,12 @@ public class UI_Game : MonoBehaviour
 
     public async UniTaskVoid SetAnimation()
     {
-        PunchingBag.GetComponent<Animator>().SetTrigger("start");
+        PunchingBagScript.gameObject.GetComponent<Animator>().SetTrigger("start");
         float angle = -90f;
         while(angle > -150f)
         {
             angle = Mathf.Lerp(angle, -150f, Time.deltaTime * 2f);
-            PunchingBag.transform.localRotation = Quaternion.Euler(0f, angle, 0f);
+            PunchingBagScript.gameObject.transform.localRotation = Quaternion.Euler(0f, angle, 0f);
             await UniTask.Yield();
         }
     }
