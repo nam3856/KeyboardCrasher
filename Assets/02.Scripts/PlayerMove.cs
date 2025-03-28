@@ -36,7 +36,7 @@ public class PlayerMove : MonoBehaviour
         UI_Game.Instance.OnTimerStart += StartGame;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         UI_Game.Instance.OnTimerEnd -= TimerEnd;
         UI_Game.Instance.OnTimerStart -= StartGame;
@@ -102,7 +102,7 @@ public class PlayerMove : MonoBehaviour
     {
         EffectAn[count].SetInteger("rand", rand);
         EffectAn[count].SetTrigger("Attack");
-        count = (count + 1) % (EffectAn.Length - 1);
+        count = (count + 1) % (EffectAn.Length);
     }
 
     public void PlayAttackSound(int idx)

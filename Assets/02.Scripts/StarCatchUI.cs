@@ -3,9 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 using TMPro;
-using Cysharp.Threading;
 using Cysharp.Threading.Tasks;
-using System.Threading.Tasks;
 
 public enum SuccessRate
 {
@@ -44,6 +42,10 @@ public class StarCatchUI : MonoBehaviour
     public TextMeshProUGUI starcatchtimertext;
     public ScreenFlashEffect Volume;
     public CameraZoomFeedback cameraZoomFeedback;
+    public GameObject Particle;
+    public Animator PlayerAnimator;
+    public AudioClip clip;
+    public AudioSource source;
 
     private void Awake()
     {
@@ -144,9 +146,13 @@ public class StarCatchUI : MonoBehaviour
         {
             Volume.FlashBloom(100f, 0.3f).Forget();
         }
-        cameraZoomFeedback.SmoothZoom(30, 0.3f).Forget();
-        await UniTask.Delay(350);
+        cameraZoomFeedback.SmoothZoomEffect(30, 0.3f).Forget();
+        await UniTask.Delay(290);
+        PlayerAnimator.SetInteger("rand", 2);
+        PlayerAnimator.SetTrigger("Attack");
 
+        source.PlayOneShot(clip);
+        await UniTask.Delay(60);
 
         OnStarCatchCompleted?.Invoke();
     }
@@ -191,7 +197,14 @@ public class StarCatchUI : MonoBehaviour
             isPlaying = false;
 
             Debug.Log(Howmuch);
-            GetComponent<CanvasGroup>().alpha = 0f;
+            HideUI().Forget();
         }
+    }
+
+    private async UniTaskVoid HideUI()
+    {
+        Particle.SetActive(true);
+        await UniTask.WaitForSeconds(0.98f, true);
+        GetComponent<CanvasGroup>().alpha = 0f;
     }
 }

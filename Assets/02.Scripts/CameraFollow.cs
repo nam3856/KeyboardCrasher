@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using Unity.Cinemachine;
 using UnityEngine;
 

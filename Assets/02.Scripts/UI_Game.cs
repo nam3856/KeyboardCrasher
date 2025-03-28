@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
-using System.Threading.Tasks.Sources;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,7 +23,8 @@ public class UI_Game : MonoBehaviour
 
     public GameObject CriticalText;
 
-
+    public GameObject StarCatchTimerParticle;
+    public ParticleSystem StarCatchTimerParticleSystem;
 
     public TextMeshProUGUI StartTimeText;
     public TextMeshProUGUI StartInstructionText;
@@ -36,6 +36,8 @@ public class UI_Game : MonoBehaviour
     public event Action OnTimerStart;
     public GameObject sandBag;
     public CameraZoomFeedback CameraZoomFeedback;
+    public TextMeshProUGUI TitleText;
+    public float BestScore = 0;
 
     private void Awake()
     {
@@ -53,7 +55,14 @@ public class UI_Game : MonoBehaviour
 
     private void Start()
     {
+        string saved = PlayerPrefs.GetString("BestScore");
+        if (string.IsNullOrEmpty(saved))
+        {
+            BestScore = float.Parse(saved);
+        }
         global::StarCatchUI.Instance.OnStarCatchCompleted += StartChase;
+        TitleText.transform.DOScale(0.8f, 0.5f).SetEase(Ease.InOutElastic).SetLoops(-1, LoopType.Yoyo);
+        
     }
 
     public void StartChase()
@@ -63,11 +72,16 @@ public class UI_Game : MonoBehaviour
 
     public async UniTaskVoid ChaseX()
     {
-        while (sandBag.GetComponent<Rigidbody2D>().linearVelocity != Vector2.zero)
+        while (sandBag.GetComponentInParent<Rigidbody2D>().linearVelocity != Vector2.zero)
         {
             ComboText.text = $"{sandBag.transform.position.x + 4.726f:F2}M";
             await UniTask.Yield();
         }
+    }
+
+    public void Save()
+    {
+        PlayerPrefs.SetString("BestScore", BestScore.ToString());
     }
 
 
@@ -94,6 +108,7 @@ public class UI_Game : MonoBehaviour
 
     public void StartTimer()
     {
+        TitleText.gameObject.SetActive(false);
         StartButton.gameObject.SetActive(false);
         Timer = 10;
         TimerUniTask().Forget();
@@ -106,7 +121,7 @@ public class UI_Game : MonoBehaviour
         StartTimeText.gameObject.SetActive(true);
         await UniTask.WaitForSeconds(1);
         StartInstructionText.gameObject.SetActive(true);
-        sandBag.GetComponent<Animator>().SetTrigger("start");
+        SetAnimation().Forget();
         await UniTask.WaitForSeconds(1);
         StartTimeText.text = "2";
 
@@ -141,6 +156,18 @@ public class UI_Game : MonoBehaviour
         StarCatchGo();
     }
 
+    public async UniTaskVoid SetAnimation()
+    {
+        sandBag.GetComponent<Animator>().SetTrigger("start");
+        float angle = -90f;
+        while(angle > -150f)
+        {
+            angle = Mathf.Lerp(angle, -150f, Time.deltaTime * 2f);
+            sandBag.transform.localRotation = Quaternion.Euler(0f, angle, 0f);
+            await UniTask.Yield();
+        }
+    }
+
     public void StarCatchGo()
     {
         StarForceTimer().Forget();
@@ -151,14 +178,32 @@ public class UI_Game : MonoBehaviour
         StarCatchUI.gameObject.SetActive(true);
         Timer = 6f;
 
-        while (Timer > 0)
+        while (Timer > 3)
         {
             Timer = Mathf.Clamp(Timer - Time.unscaledDeltaTime, 0, 6f);
             TimerBar.fillAmount = Mathf.Clamp(Timer / 3f, 0, 1f);
             await UniTask.Yield();
         }
 
+        var main = StarCatchTimerParticleSystem.main;
+        StarCatchTimerParticle.SetActive(true);
+        main.simulationSpeed = 1f / Time.timeScale;
+        while (Timer > 0)
+        {
+            Timer = Mathf.Clamp(Timer - Time.unscaledDeltaTime, 0, 3f);
+            TimerBar.fillAmount = Mathf.Clamp(Timer / 3f, 0, 1f);
+            StarCatchTimerParticle.GetComponent<RectTransform>().anchoredPosition = new Vector2(TimerBar.GetComponent<RectTransform>().rect.width * TimerBar.fillAmount, 0);
+            await UniTask.Yield();
+        }
+        main.loop = false;
         CameraZoomFeedback.SmoothZoom(55, 0.1f).Forget();
+
+        await UniTask.WaitForSeconds(1f, true);
+        TimerBase.gameObject.SetActive(false);
+
+        TimerBar.gameObject.SetActive(false);
+        TimerText.gameObject.SetActive(false);
+
     }
 
     public void ShowCriticalText()
