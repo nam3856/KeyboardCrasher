@@ -1,32 +1,25 @@
 using UnityEngine;
 
-public class KKK : MonoBehaviour
+public class CreateGrid : MonoBehaviour
 {
 
-    public GameObject k;
-    public GameObject a;
+    public GameObject Grid10mPrefab;
+    public GameObject Grid1mPrefab;
+    public float start = -4.726f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        float start = -4.726f;
-
         for(int i = 0; i < 150; i++)
         {
             Vector3 vector3 = new Vector3(start + i * 10, -3.79f);
-            Instantiate(k, vector3, Quaternion.identity);
+            Instantiate(Grid10mPrefab, vector3, Quaternion.identity);
         }
 
         for (int i = 0; i < 1500; i++)
         {
             if (i % 10 == 0) continue;
             Vector3 vector3 = new Vector3(start + i, -3.79f);
-            Instantiate(a, vector3, Quaternion.identity);
+            Instantiate(Grid1mPrefab, vector3, Quaternion.identity);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

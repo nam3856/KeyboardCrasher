@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PunchingBagParent : MonoBehaviour
 {
-    public SandBag child;
+    public PunchingBag child;
     private void OnCollisionEnter2D(Collision2D collision)
     {
         child.SpawnSmoke();

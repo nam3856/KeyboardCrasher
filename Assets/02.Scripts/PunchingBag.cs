@@ -1,8 +1,7 @@
 using Cysharp.Threading.Tasks;
-using System.Threading;
 using UnityEngine;
 
-public class SandBag : MonoBehaviour
+public class PunchingBag : MonoBehaviour
 {
     public Rigidbody2D Rb;
     public Vector2[] directions;
