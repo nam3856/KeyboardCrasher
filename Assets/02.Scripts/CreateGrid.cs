@@ -9,13 +9,13 @@ public class CreateGrid : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        for(int i = 0; i < 400; i++)
+        for(int i = 0; i < 1000; i++)
         {
             Vector3 vector3 = new Vector3(start + i * 10, -3.79f);
             Instantiate(Grid10mPrefab, vector3, Quaternion.identity);
         }
 
-        for (int i = 0; i < 4000; i++)
+        for (int i = 0; i < 10000; i++)
         {
             if (i % 10 == 0) continue;
             Vector3 vector3 = new Vector3(start + i, -3.79f);

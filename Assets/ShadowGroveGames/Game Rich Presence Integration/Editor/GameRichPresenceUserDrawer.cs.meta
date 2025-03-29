@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e914ae9cae56d0a47928f18d13205313
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239804
+  packageName: Game Rich Presence
+  packageVersion: 1.6
+  assetPath: Assets/ShadowGroveGames/Game Rich Presence Integration/Editor/GameRichPresenceUserDrawer.cs
+  uploadId: 640575

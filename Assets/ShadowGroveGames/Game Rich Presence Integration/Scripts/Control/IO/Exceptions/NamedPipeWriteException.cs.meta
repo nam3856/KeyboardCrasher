@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 32a12cea90d19f041ac631369ba6816f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239804
+  packageName: Game Rich Presence
+  packageVersion: 1.6
+  assetPath: Assets/ShadowGroveGames/Game Rich Presence Integration/Scripts/Control/IO/Exceptions/NamedPipeWriteException.cs
+  uploadId: 640575

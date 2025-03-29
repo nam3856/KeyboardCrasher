@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c1db0f145b192ba43a49acae80c60a54
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239804
+  packageName: Game Rich Presence
+  packageVersion: 1.6
+  assetPath: Assets/ShadowGroveGames/Game Rich Presence Integration/Game Rich Presence
+    Manager.prefab
+  uploadId: 640575

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: b794515b604853744aed68fccb33677d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239804
+  packageName: Game Rich Presence
+  packageVersion: 1.6
+  assetPath: Assets/ShadowGroveGames/Game Rich Presence Integration/Editor/CharacterLimitAttributeDrawer.cs
+  uploadId: 640575

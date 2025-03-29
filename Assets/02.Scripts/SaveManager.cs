@@ -5,17 +5,16 @@ public class SaveManager : MonoBehaviour
     public static SaveManager Instance;
     private bool _notSaved;
     [SerializeField] private PunchingBag _punchingBag;
+
     private void Awake()
     {
         _notSaved = true;
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
+            Destroy(Instance.gameObject);
         }
-        else
-        {
-            Destroy(Instance);
-        }
+
+        Instance = this;
     }
 
     private void Start()
@@ -28,8 +27,7 @@ public class SaveManager : MonoBehaviour
         if (!_notSaved) return;
         _notSaved = false;
 
-        RankingManager.Instance.UploadScore(PlayerManager.Instance.playerID, "¶õ¸¶", score);
-        RankingManager.Instance.GetTopRankings();
+        RankingManager.Instance.UploadScore(PlayerManager.Instance.playerID, UI_Game.Instance.Name, score);
         PlayerPrefs.SetString("BestScore", score.ToString());
 
     }

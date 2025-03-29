@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 6ab2a17931c740b4aa9f150dd5f484f3
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239804
+  packageName: Game Rich Presence
+  packageVersion: 1.6
+  assetPath: Assets/ShadowGroveGames/Game Rich Presence Integration/Scripts/Control/UnityLogger.cs
+  uploadId: 640575

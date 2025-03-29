@@ -4,6 +4,7 @@ using DG.Tweening;
 using System;
 using TMPro;
 using Cysharp.Threading.Tasks;
+using static UnityEngine.ParticleSystem;
 
 public enum SuccessRate
 {
@@ -46,17 +47,17 @@ public class StarCatchUI : MonoBehaviour
     public Animator PlayerAnimator;
     public AudioClip clip;
     public AudioSource source;
+    public AudioClip StarCatch;
+    public GameObject Particles;
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
+            Destroy(Instance.gameObject);
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+
+        Instance = this;
     }
     private void Start()
     {
@@ -142,8 +143,9 @@ public class StarCatchUI : MonoBehaviour
         Volume.VignetteStart(0, 0.01f).Forget();
         if (Howmuch >= SuccessRate.Success)
         {
-            Volume.FlashBloom(100f, 0.3f).Forget();
+            Volume.FlashBloom(100f, 0.4f).Forget();
 
+            Volume.ChromaticStart(1f, 0.1f).Forget();
             cameraZoomFeedback.SmoothZoomEffect(30, 0.3f).Forget();
         }
         else
@@ -154,11 +156,15 @@ public class StarCatchUI : MonoBehaviour
         SoundStageController.Instance.PlayEffectSound();
         await UniTask.Delay(100);
 
-        source.PlayOneShot(clip);
-        await UniTask.Delay(90);
+        Volume.ChromaticStart(0f, 0.1f).Forget();
+        
         PlayerAnimator.SetInteger("rand", 2);
         PlayerAnimator.SetTrigger("Attack");
-        await UniTask.Delay(60);
+        await UniTask.Delay(90);
+
+        Particles.SetActive(false);
+        source.PlayOneShot(clip);
+        await UniTask.Delay(20);
 
         OnStarCatchCompleted?.Invoke(Howmuch);
     }
@@ -200,7 +206,7 @@ public class StarCatchUI : MonoBehaviour
             }
 
             isPlaying = false;
-
+            source.PlayOneShot(StarCatch);
             HideUI().Forget();
         }
     }

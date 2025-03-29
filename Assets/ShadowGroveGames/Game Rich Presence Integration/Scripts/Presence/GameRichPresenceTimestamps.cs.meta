@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: ee59e38971e3313428773f2b5daae653
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239804
+  packageName: Game Rich Presence
+  packageVersion: 1.6
+  assetPath: Assets/ShadowGroveGames/Game Rich Presence Integration/Scripts/Presence/GameRichPresenceTimestamps.cs
+  uploadId: 640575

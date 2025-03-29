@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 7d16178b4934cc149a230ff5442a9170
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239804
+  packageName: Game Rich Presence
+  packageVersion: 1.6
+  assetPath: Assets/ShadowGroveGames/Game Rich Presence Integration/Examples/3. Update
+    Rich Presence on Runtime/Scripts/UpdateRichPresenceOnRuntimeExample.cs
+  uploadId: 640575

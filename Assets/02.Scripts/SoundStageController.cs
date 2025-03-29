@@ -22,10 +22,14 @@ public class SoundStageController : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float introDuration = 10f;
 
-    private bool hasStarted = false;
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(Instance.gameObject);
+        }
+
         Instance = this;
     }
     private void Start()

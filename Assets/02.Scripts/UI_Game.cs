@@ -3,13 +3,20 @@ using DG.Tweening;
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class UI_Game : MonoBehaviour
 {
     public static UI_Game Instance;
     private Tween _tween;
+    public PlayerInput playerInput;
+    public string Attack1 = "Attack";
+    public string Attack2 = "Interact";
+    public AudioSource source;
 
+    public string Key1;
+    public string Key2;
     [Header("Title")]
     public TextMeshProUGUI TitleText;
     public Button StartButton;
@@ -17,6 +24,7 @@ public class UI_Game : MonoBehaviour
     public Button RankingButton;
     public TMP_InputField NicknameInput;
     public string Name;
+    public TextMeshProUGUI RandomText;
     public GameObject MainPanel;
     public TextMeshProUGUI NicknameText;
 
@@ -25,6 +33,7 @@ public class UI_Game : MonoBehaviour
     public Image TimerBar;
     public Image TimerBase;
     public TextMeshProUGUI TimerText;
+    public AudioClip TimerStartSound;
 
     [Header("Start Timer")]
     public TextMeshProUGUI StartTimeText;
@@ -50,10 +59,15 @@ public class UI_Game : MonoBehaviour
     [Header("Score")]
     public float BestScore = 0;
     public TextMeshProUGUI NewRecordText;
+    public GameObject BestRecordWindow;
     public TextMeshProUGUI BestScoreText;
     public GameObject ScoreParticle;
     private Sequence[] _successTextTweenSequence;
-
+    private Vector3 _bestScoreWindowPos;
+    public GameObject BestRecordPrefab;
+    public AudioClip UISound;
+    public AudioClip NewRecord;
+    public AudioClip TimerSound;
     
     public CameraZoomFeedback CameraZoomFeedback;
     public GameObject PunchingBagObject;
@@ -66,28 +80,48 @@ public class UI_Game : MonoBehaviour
     [Header("Ranking")]
     public GameObject RankingPanel;
     public GameObject RankingEntryTemplate;
-    
+    public GameObject RankingUI;
+    public Button ExitButton;
 
+    public GameObject Key1Obj;
+    public GameObject Key2Obj;
+
+    [Header("Setting")]
+    public GameObject SettingUI;
+    public Button SettingButton;
+    public Button SettingExitButton;
 
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
+            Destroy(Instance.gameObject);
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+
+        Instance = this;
 
         StartButton.onClick.AddListener(StartTimer);
 
         RandomButton.onClick.AddListener(SetRandomNickname);
+        RankingButton.onClick.AddListener(ShowRankingButtonClicked);
+        ExitButton.onClick.AddListener(HideRanking);
 
+        SettingButton.onClick.AddListener(OpenSetting);
+        SettingExitButton.onClick.AddListener(CloseSetting);
         SequenceInit();
     }
+    private void ShowRankingButtonClicked()
+    {
+        MainPanel.SetActive(false);
+        ShowRanking();
+    }
 
+
+    public void ButtonClickSound()
+    {
+        source.PlayOneShot(UISound);
+    }
     private void SetRandomNickname()
     {
         string nickname = NicknameGenerator.GenerateKoreanNickname();
@@ -123,7 +157,6 @@ public class UI_Game : MonoBehaviour
     }
     private void Start()
     {
-
         string saved = PlayerPrefs.GetString("BestScore");
         Debug.Log(saved);
         if (!string.IsNullOrEmpty(saved))
@@ -155,12 +188,36 @@ public class UI_Game : MonoBehaviour
             NicknameInput.gameObject.SetActive(false);
             NicknameText.text = $"다시 오셨군요, {name} 님!";
             NicknameText.gameObject.SetActive(true);
+            RandomText.gameObject.SetActive(false);
         }
         global::StarCatchUI.Instance.OnStarCatchCompleted += ShowSuccessRateText;
         TitleText.transform.DOScale(0.8f, 0.5f).SetEase(Ease.InOutElastic).SetLoops(-1, LoopType.Yoyo);
         PunchingBagScript.OnPunchingBagMoveEnd += UpdateBestScoreAndShowNewRecordText;
+        KeySetting();
+        _bestScoreWindowPos = BestRecordWindow.GetComponent<RectTransform>().anchoredPosition;
     }
 
+    void OpenSetting()
+    {
+        SettingUI.SetActive(true);
+        MainPanel.SetActive(false);
+    }
+
+    void CloseSetting()
+    {
+        SettingUI.SetActive(false);
+        MainPanel.SetActive(true);
+    }
+
+    public void KeySetting()
+    {
+
+        InputAction attack1 = playerInput.actions[Attack1];
+        InputAction attack2 = playerInput.actions[Attack2];
+
+        Key1 = attack1.bindings[0].ToDisplayString();
+        Key2 = attack2.bindings[0].ToDisplayString();
+    }
     public void ShowSuccessRateText(SuccessRate rate)
     {
         _successText.text = SuccessTexts[(int)rate];
@@ -170,12 +227,63 @@ public class UI_Game : MonoBehaviour
         ChaseX().Forget();
     }
 
+    public void ShowRanking()
+    {
+        RankingManager.Instance.GetTopRankings(10, DisplayRanking);
+    }
 
+    public void DisplayRanking(RankingManager.RankingList list)
+    {
+        RankingUI.SetActive(true);
+        for (int i = 0; i < 10; i++)
+        {
+            GameObject newEntry = Instantiate(RankingEntryTemplate, RankingPanel.transform);
+            newEntry.SetActive(true);
+
+            var texts = newEntry.GetComponentsInChildren<TextMeshProUGUI>();
+            texts[0].text = $"#{i + 1}";
+            if (i < list.rankings.Count)
+            {
+                texts[1].text = list.rankings[i].nickname;
+                texts[2].text = $"{list.rankings[i].bestScore:F2}M";
+                texts[3].text = $"{list.rankings[i].bestCombo} Combo";
+            }
+        }
+    }
+    public async UniTaskVoid ShowKeys()
+    {
+        Key1Obj.GetComponent<KeyVisual>().keyBind = Key1;
+        Key2Obj.GetComponent<KeyVisual>().keyBind = Key2;
+
+        Key1Obj.SetActive(true);
+        await UniTask.Delay(50);
+
+        Key2Obj.SetActive(true);
+    }
+    public void HideRanking()
+    {
+        foreach (Transform child in RankingPanel.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        RankingUI.SetActive(false);
+
+        if(PunchingBagObject.transform.position.x != -4.726f)
+        {
+            FadeManager.Instance.RestartSceneWithFade();
+        }
+        else
+        {
+            MainPanel.SetActive(true);
+        }
+    }
     public async UniTaskVoid ChaseX()
     {
+        Instantiate(BestRecordPrefab,new Vector3(BestScore-4.726f,0,0), Quaternion.identity);
+        BestRecordWindow.GetComponent<RectTransform>().DOAnchorPos(_bestScoreWindowPos, 2).SetEase(Ease.OutExpo);
         while (PunchingBagObject.GetComponent<Rigidbody2D>().linearVelocity != Vector2.zero)
         {
-            ComboText.text = $"{PunchingBagObject.transform.position.x + 4.726f:F2}M";
+            ComboText.text = $"{PunchingBagScript.gameObject.transform.position.x + 4.726f:F2}M";
             await UniTask.Yield();
         }
     }
@@ -184,11 +292,17 @@ public class UI_Game : MonoBehaviour
     {
         if (BestScore < score)
         {
+            float prev = BestScore;
             BestScore = score;
-            UpdateBestScore(BestScore, score).Forget();
+            UpdateBestScore(prev, score).Forget();
             ScoreParticle.SetActive(true);
         }
+        else
+        {
+            ShowRanking();
+        }
     }
+
     public async UniTaskVoid UpdateBestScore(float prevScore, float newScore)
     {
         OnBestScoreChanged?.Invoke(BestScore);
@@ -199,14 +313,18 @@ public class UI_Game : MonoBehaviour
             prevScore += increase;
             BestScoreText.text = $"{prevScore:F3}M";
             await UniTask.Yield();
-            increase += 0.001f;
+            increase *= 1.5f;
         }
         BestScoreText.text = $"{newScore:F3}M";
         await UniTask.Delay(200);
 
         NewRecordText.gameObject.SetActive(true);
-        NewRecordText.transform.DOScale(1f, 0.2f).SetEase(Ease.OutElastic);
-        // TODO: 효과음 추가
+        NewRecordText.transform.DOScale(1f, 0.4f).SetEase(Ease.OutElastic);
+        source.PlayOneShot(NewRecord);
+        await UniTask.Delay(500);
+
+        ShowRanking();
+        
     }
 
 
@@ -265,26 +383,33 @@ public class UI_Game : MonoBehaviour
         StartTimeText.gameObject.SetActive(true);
         await UniTask.WaitForSeconds(1);
         StartInstructionText.gameObject.SetActive(true);
+        StartInstructionText.text = $"Press {Key1}, {Key2} Key To Attack!";
         SetAnimation().Forget();
+        source.PlayOneShot(TimerSound);
         await UniTask.WaitForSeconds(1);
         StartTimeText.text = "2";
 
+        source.PlayOneShot(TimerSound);
         TimerBar.GetComponent<RectTransform>().DOAnchorPosY(-50f, 1f).SetEase(Ease.OutBack);
         TimerBase.GetComponent<RectTransform>().DOAnchorPosY(-50f, 1f).SetEase(Ease.OutBack);
         TimerText.GetComponent<RectTransform>().DOAnchorPosY(0f, 1f).SetEase(Ease.OutBack);
         await UniTask.WaitForSeconds(1);
         StartTimeText.text = "1";
 
+        source.PlayOneShot(TimerSound);
         await UniTask.WaitForSeconds(1);
         StartTimeText.text = "START!";
 
+        source.PlayOneShot(TimerStartSound);
         OnTimerStart?.Invoke();
+        ShowKeys().Forget();
         StartTimeText.transform.DOScale(2f, 0.01f).OnComplete(() => StartTimeText.transform.DOScale(1f, 0.2f).SetEase(Ease.InOutExpo).OnComplete(() =>
         {
             StartTimeText.gameObject.SetActive(false);
         }));
 
         StartTimerText.gameObject.SetActive(false);
+        BestRecordWindow.GetComponent<RectTransform>().DOAnchorPosX(996, 2).SetEase(Ease.InExpo);
         while (Timer > 0)
         {
             TimerText.text = Timer.ToString("F3");
@@ -315,13 +440,41 @@ public class UI_Game : MonoBehaviour
 
     public async UniTaskVoid StarForceTimer()
     {
+        Key1Obj.SetActive(false);
+        Key2Obj.SetActive(false);
         StarCatchUI.gameObject.SetActive(true);
         Timer = 3f;
-        await UniTask.WaitForSeconds(3, true);
+
+        for(int i = 0; i < 3; i++)
+        {
+            source.PlayOneShot(TimerSound);
+            await UniTask.WaitForSeconds(1, true);
+        }
 
         var main = StarCatchTimerParticleSystem.main;
         main.simulationSpeed = 1f / Time.timeScale;
         StarCatchTimerParticle.SetActive(true);
+
+        source.PlayOneShot(TimerStartSound);
+        while (Timer > 2)
+        {
+            Timer = Mathf.Clamp(Timer - Time.unscaledDeltaTime, 0, 3f);
+            TimerBar.fillAmount = Mathf.Clamp(Timer / 3f, 0, 1f);
+            StarCatchTimerParticle.GetComponent<RectTransform>().anchoredPosition = new Vector2(TimerBar.GetComponent<RectTransform>().rect.width * TimerBar.fillAmount, 0);
+            await UniTask.Yield();
+        }
+
+        source.PlayOneShot(TimerStartSound);
+
+        while (Timer > 1)
+        {
+            Timer = Mathf.Clamp(Timer - Time.unscaledDeltaTime, 0, 3f);
+            TimerBar.fillAmount = Mathf.Clamp(Timer / 3f, 0, 1f);
+            StarCatchTimerParticle.GetComponent<RectTransform>().anchoredPosition = new Vector2(TimerBar.GetComponent<RectTransform>().rect.width * TimerBar.fillAmount, 0);
+            await UniTask.Yield();
+        }
+
+        source.PlayOneShot(TimerStartSound);
 
         while (Timer > 0)
         {

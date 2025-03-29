@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: dba7d6b6e85297849bf386663743ec22
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239804
+  packageName: Game Rich Presence
+  packageVersion: 1.6
+  assetPath: Assets/ShadowGroveGames/Game Rich Presence Integration/Editor/GameRichPresenceTimestampDrawer.cs
+  uploadId: 640575

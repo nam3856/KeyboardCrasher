@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 1db6df8c1ae39294aaf8a7d0694eca39
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239804
+  packageName: Game Rich Presence
+  packageVersion: 1.6
+  assetPath: Assets/ShadowGroveGames/Game Rich Presence Integration/Examples/2. Use
+    Avatar as Texture/Scripts/GameRichPresenceAvatarPoster.cs
+  uploadId: 640575

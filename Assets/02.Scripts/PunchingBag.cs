@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class PunchingBag : MonoBehaviour
@@ -16,14 +17,61 @@ public class PunchingBag : MonoBehaviour
     public GameObject CrashParticlePrefab;
     public GameObject FlyParticle;
     public ParticleSystem FlyParticleSystem;
-
-
+    public AudioClip LandSound;
+    public AudioClip CrushSound;
+    public AudioSource source;
+    public Transform pTransform;
+    public CameraZoomFeedback cam;
 
     private float _time;
     private bool _onPunchingBagMoveEnd;
     private void Start()
     {
         StarCatchUI.Instance.OnStarCatchCompleted += FlyAway;
+    }
+
+    Vector3 lastPos;
+    float _landTime;
+    private void FixedUpdate()
+    {
+        if (_rigidbody2D.simulated == false) return;
+        if(lastPos == transform.position || _rigidbody2D.linearVelocity.magnitude < 0.05f)
+        {
+            _time += Time.deltaTime;
+        }
+        else
+        {
+            _time = 0;
+        }
+        if(pTransform.position.y <= -3)
+        {
+            _landTime += Time.deltaTime;
+        }
+        else
+        {
+            _landTime = 0;
+        }
+
+        if (_landTime > 1)
+        {
+            if (!p)
+            {
+                p = true;
+                SetAnimation();
+            }
+        }
+        if (_time > 0.6 && !_onPunchingBagMoveEnd)
+        {
+            _onPunchingBagMoveEnd = true;
+
+            SetAnimation();
+            GetComponentInParent<Transform>().rotation = Quaternion.Euler(0f, 0f, 90f);
+            // 이동 끝
+            OnPunchingBagMoveEnd?.Invoke(transform.position.x + 4.726f);
+
+            transform.localRotation = Quaternion.Euler(90f, -90, 88);
+        }
+        lastPos = transform.position;
     }
 
     public Animator animator;
@@ -53,55 +101,49 @@ public class PunchingBag : MonoBehaviour
             if (UnityEngine.Random.Range(0, 101) == 1)
             {
                 direction = directions[5];
+                multiplers[(int)rate] = 10;
             }
         }
+
         _rigidbody2D.simulated = true;
         _rigidbody2D.AddForce(direction * UI_Game.Instance.ComboCount * multiplers[(int)rate], ForceMode2D.Impulse);
         _rigidbody2D.AddTorque(UI_Game.Instance.ComboCount * 5);
+
+        if(rate != SuccessRate.Bad)
+        {
+            StartCoroutine(TimeStop());
+        }
         FlyParticle.SetActive(true);
+        transform.localRotation = Quaternion.Euler(90f, -90, 88);
     }
 
-    public async UniTaskVoid SetAnimation()
+    public IEnumerator TimeStop()
     {
-        if (p) return;
-        p = true;
+        Time.timeScale = 0.1f;
+        cam.SmoothZoomEffect(30, 0.3f).Forget();
+        yield return new WaitForSeconds(0.15f);
+        Time.timeScale = 1f;
+    }
+    public void SetAnimation()
+    {
         animator.SetTrigger("Land");
-        float angleZ = 0f;
-        float angleY = -150f;
-        while (angleY < -90f)
-        {
-            angleY = Mathf.Lerp(angleY, -90f, Time.deltaTime * 4f);
-            angleZ = Mathf.Lerp(angleZ, 88f, Time.deltaTime * 4f);
-            transform.localRotation = Quaternion.Euler(90f, angleY, angleZ);
-            await UniTask.Yield();
-        }
-        transform.localRotation = Quaternion.Euler(90f, -90f, 88f);
+        source.PlayOneShot(LandSound);
     }
 
     public void SpawnSmoke()
     {
         Vector3 spawnPos = new Vector3(transform.position.x, -3.75f);
         Instantiate(CrashParticlePrefab, spawnPos, Quaternion.identity);
+        if(!FlyParticleSystem.isPlaying)
+            FlyParticleSystem.Play();
         var main = FlyParticleSystem.main;
         main.loop = false;
+
+        source.PlayOneShot(CrushSound);
     }
     bool p = false;
     public void Stay()
     {
-        _time += Time.deltaTime;
-        if (_time > 0.6f)
-        {
-            SetAnimation().Forget();
-            if (_rigidbody2D.linearVelocity == Vector2.zero)
-            {
-                if (!_onPunchingBagMoveEnd)
-                {
-                    _onPunchingBagMoveEnd = true;
-                    // 이동 끝
-                    OnPunchingBagMoveEnd?.Invoke(transform.position.x+ 4.726f);
-                }
-            }
-        }
     }
 
     public void Exit()

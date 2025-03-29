@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: f351421af1c9d374fb6019d79e2c8e18
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239804
+  packageName: Game Rich Presence
+  packageVersion: 1.6
+  assetPath: Assets/ShadowGroveGames/Game Rich Presence Integration/Examples/2. Use
+    Avatar as Texture/Materials/Environment/Wall.mat
+  uploadId: 640575

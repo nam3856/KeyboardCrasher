@@ -1,0 +1,22 @@
+{
+    "name": "org.Shadow-Grove.GameRichPresenceIntegration.Examples",
+    "rootNamespace": "ShadowGroveGames.GameRichPresenceIntegration.Examples",
+    "references": [
+        "org.Shadow-Grove.GameRichPresenceIntegration.Scripts"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "LinuxStandalone64",
+        "macOSStandalone",
+        "WindowsStandalone32",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

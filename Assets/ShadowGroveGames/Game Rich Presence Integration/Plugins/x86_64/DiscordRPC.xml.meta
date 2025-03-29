@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5610d275e512be04ea3c74f6f3a800a6
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239804
+  packageName: Game Rich Presence
+  packageVersion: 1.6
+  assetPath: Assets/ShadowGroveGames/Game Rich Presence Integration/Plugins/x86_64/DiscordRPC.xml
+  uploadId: 640575

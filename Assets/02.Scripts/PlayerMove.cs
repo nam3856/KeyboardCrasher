@@ -1,11 +1,6 @@
 using Cysharp.Threading.Tasks;
-using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Animations;
-using UnityEngine.Audio;
 using UnityEngine.InputSystem;
-using UnityEngine.XR;
 public class PlayerMove : MonoBehaviour
 {
     public InputSystem_Actions inputActions;
@@ -13,7 +8,7 @@ public class PlayerMove : MonoBehaviour
     public CameraShake CameraShake;
     public Rigidbody2D Rb;
     public Animator An;
-    public Animator [] EffectAn;
+    public Animator[] EffectAn;
     private float x;
     public float MoveSpeed = 5f;
     public int count;
@@ -24,6 +19,10 @@ public class PlayerMove : MonoBehaviour
     public AudioClip[] attackStartSounds;
     public AudioClip[] attackHitSounds;
     public Animator PunchBagAnimator;
+    public PlayerInput playerInput;
+    private InputAction attackAction;
+    private InputAction interactAction;
+    public GameObject Particles;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     private void Awake()
@@ -51,26 +50,35 @@ public class PlayerMove : MonoBehaviour
     }
     void StartGame()
     {
-        inputActions.Enable();
-        inputActions.Player.Attack.performed += OnAttackPerformed;
+        playerInput.actions.Enable();
+        attackAction = playerInput.actions["Attack"];
+        interactAction = playerInput.actions["Interact"];
+
+        attackAction.performed += OnAttackPerformed;
+        interactAction.performed += OnAttackPerformed;
     }
 
     void TimerEnd()
     {
-        inputActions.Player.Attack.performed -= OnAttackPerformed;
-        inputActions.Disable();
+        attackAction.performed -= OnAttackPerformed;
+        interactAction.performed -= OnAttackPerformed;
+        playerInput.actions.Disable();
+
+        Particles.SetActive(true);
         UniTask.RunOnThreadPool(async () =>
         {
             await UniTask.Delay(50);
+            CameraZoomFeedback.SmoothZoom(30, 2f).Forget();
+
+            
+            An.SetTrigger("Charge");
         });
-        CameraZoomFeedback.SmoothZoom(30, 2f).Forget();
-        An.SetTrigger("Charge");
     }
 
     private void OnAttackPerformed(InputAction.CallbackContext context)
     {
         int rand = Random.Range(0, 6);
-        
+
         An.SetInteger("rand", rand);
         An.SetTrigger("Attack");
         rand = Random.Range(0, 2);

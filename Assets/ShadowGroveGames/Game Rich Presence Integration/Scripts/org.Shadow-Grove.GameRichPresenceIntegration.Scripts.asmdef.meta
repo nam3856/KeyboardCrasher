@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 674c2b57fc5b6044fbd1d699a674b265
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239804
+  packageName: Game Rich Presence
+  packageVersion: 1.6
+  assetPath: Assets/ShadowGroveGames/Game Rich Presence Integration/Scripts/org.Shadow-Grove.GameRichPresenceIntegration.Scripts.asmdef
+  uploadId: 640575

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,6 +35,11 @@ public class RankingManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(Instance.gameObject);
+        }
+
         Instance = this;
     }
 
@@ -71,12 +77,12 @@ public class RankingManager : MonoBehaviour
     }
 
     // 랭킹 받아오기
-    public void GetTopRankings(int limit = 10)
+    public void GetTopRankings(int limit, Action<RankingList> onCompleted)
     {
-        StartCoroutine(GetRankingCoroutine(limit));
+        StartCoroutine(GetRankingCoroutine(limit, onCompleted));
     }
 
-    IEnumerator GetRankingCoroutine(int limit)
+    IEnumerator GetRankingCoroutine(int limit, Action<RankingList> onCompleted)
     {
         UnityWebRequest req = UnityWebRequest.Get($"{baseUrl}/rankings?limit={limit}");
         yield return req.SendWebRequest();
@@ -87,10 +93,7 @@ public class RankingManager : MonoBehaviour
 
             RankingList list = JsonUtility.FromJson<RankingList>(json);
 
-            foreach (var entry in list.rankings)
-            {
-                Debug.Log($"{entry.nickname} - {entry.bestScore} - {entry.bestCombo}");
-            }
+            onCompleted?.Invoke(list);
         }
         else
         {

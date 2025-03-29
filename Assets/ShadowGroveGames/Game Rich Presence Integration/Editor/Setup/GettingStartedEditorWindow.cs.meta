@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 5c6d27d6e4c794646a59aa8c1bcf92ac
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239804
+  packageName: Game Rich Presence
+  packageVersion: 1.6
+  assetPath: Assets/ShadowGroveGames/Game Rich Presence Integration/Editor/Setup/GettingStartedEditorWindow.cs
+  uploadId: 640575
