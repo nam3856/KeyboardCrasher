@@ -79,7 +79,7 @@ public class PunchingBag : MonoBehaviour
     private void FlyAway(SuccessRate rate)
     {
 
-        HitParticle.SetActive(true);
+        
         animator.SetTrigger("Fly");
         Vector2 direction = directions[(int)rate].normalized;
         var emission = HitParticleSystem.emission;
@@ -105,14 +105,15 @@ public class PunchingBag : MonoBehaviour
             }
         }
 
-        _rigidbody2D.simulated = true;
-        _rigidbody2D.AddForce(direction * UI_Game.Instance.ComboCount * multiplers[(int)rate], ForceMode2D.Impulse);
-        _rigidbody2D.AddTorque(UI_Game.Instance.ComboCount * 5);
+        
 
         if(rate != SuccessRate.Bad)
         {
             StartCoroutine(TimeStop());
         }
+        _rigidbody2D.simulated = true;
+        _rigidbody2D.AddForce(direction * UI_Game.Instance.ComboCount * multiplers[(int)rate], ForceMode2D.Impulse);
+        _rigidbody2D.AddTorque(UI_Game.Instance.ComboCount * 5);
         FlyParticle.SetActive(true);
         transform.localRotation = Quaternion.Euler(90f, -90, 88);
     }
@@ -120,6 +121,7 @@ public class PunchingBag : MonoBehaviour
     public IEnumerator TimeStop()
     {
         Time.timeScale = 0.1f;
+        HitParticle.SetActive(true);
         cam.SmoothZoomEffect(30, 0.3f).Forget();
         yield return new WaitForSeconds(0.15f);
         Time.timeScale = 1f;
