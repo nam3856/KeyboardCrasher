@@ -72,6 +72,15 @@ public class PunchingBag : MonoBehaviour
             transform.localRotation = Quaternion.Euler(90f, -90, 88);
         }
         lastPos = transform.position;
+
+
+        if(transform.position.y < -10f)
+        {
+            _rigidbody2D.linearVelocity = Vector3.zero;
+            _rigidbody2D.angularVelocity = 0;
+            _rigidbody2D.position = Vector3.zero;
+            _rigidbody2D.linearVelocity = Vector3.left;
+        }
     }
 
     public Animator animator;
